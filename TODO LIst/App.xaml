@@ -1,9 +1,16 @@
-﻿<Application x:Class="TODO_LIst.App"
+﻿<Application x:Class="TODO_List.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:TODO_LIst"
-             StartupUri="MainWindow.xaml">
+             xmlns:local="clr-namespace:TODO_List"
+             Startup="Application_Startup">
+    <!-- 전체 애플리케이션에서 사용할 공통 스타일은 App.xaml에 정의하는것이 좋다고함 -->
     <Application.Resources>
-         
+        <!-- 외부 스타일 로드 -->
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resource/Style/BaseStyles.xaml"/>
+                <ResourceDictionary Source="/Resource/Style/CalendarStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

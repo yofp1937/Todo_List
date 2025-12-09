@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace TODO_List.Converters
+namespace TODO_List.Converter
 {
     class WeekDayToColorConverter : IValueConverter
     {

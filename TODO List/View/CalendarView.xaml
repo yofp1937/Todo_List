@@ -1,0 +1,59 @@
+<!-- WeekHeader, Calendar View 생성 -->
+<UserControl x:Class="TODO_List.View.CalendarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:TODO_List.Converter">
+
+    <UserControl.Resources>
+        <!-- Converter 등록 -->
+        <conv:WeekDayToColorConverter x:Key="WeekDayToColorConverter"/>
+    </UserControl.Resources>
+
+    <Border Padding="10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <!-- WeekHeader Line과 Calendar Line 나누기 -->
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- WeekHeader 생성 -->
+            <!-- WeekHeader는 단순히 TextBlock의 Text 값에 따라 브러쉬 색상만(값 하나만) 변하면 돼서 Converter가 깔끔하다고 함 -->
+            <ItemsControl Grid.Row="0" ItemsSource="{Binding WeekDays}" HorizontalAlignment="Right" Width="805">
+                <!-- ItemsPanel 내에서 사용될 Panel들을 정의하는 곳 -->
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="7"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <!-- Panel에 들어갈 Element들을 정의하는 곳 -->
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource WeekHeaderBorderStyle}"
+                                    BorderBrush="{Binding Converter={StaticResource WeekDayToColorConverter}}">
+                            <TextBlock Text="{Binding}" Style="{StaticResource WeekHeaderTextStyle}"
+                                            Foreground="{Binding Converter={StaticResource WeekDayToColorConverter}}"/>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Calendar 생성 -->
+            <!-- Calendar 내부 데이터는 여러가지 조건에따라 값이 변하기때문에 MultidateTrigger를 이용하는게 좋다고 함(CalendarStyles.xaml) -->
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding Days}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="7"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource CalendarDayBorderStyle}">
+                            <TextBlock Text="{Binding DayNumber}" Style="{StaticResource CalendarDayTextStyle}"/>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Border>
+</UserControl>

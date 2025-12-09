@@ -45,6 +45,10 @@ namespace TODO_List.ViewModel
         }
         #endregion
 
+        /// <summary>
+        /// 값이 변할때 UI를 갱신시키기위한 알림 함수
+        /// </summary>
+        /// <param name="propertyName"></param>
         #region OnPropertyChanged
         private void OnPropertyChanged(string propertyName)
         {
@@ -77,7 +81,7 @@ namespace TODO_List.ViewModel
                 {
                     DayNumber = day,
                     DayOfWeek = date.DayOfWeek,
-                    IsToday = date == DateTime.Today,
+                    IsToday = date == DateTime.Today.Date,
                     IsHoliday = HolidayProvider.IsHoliday(date),
                     IsCurrentMonth = true,
                 });
@@ -89,6 +93,11 @@ namespace TODO_List.ViewModel
             AddNextMonthDays(targetMonth.AddMonths(1), remainingCells);
         }
 
+        /// <summary>
+        /// 현재 표시되는 달력에서 이전달에 해당하는 부분의 날짜를 채워주는 함수
+        /// </summary>
+        /// <param name="targetMonth">이전달이 몇년 몇월인지 매개변수로 넣어야함</param>
+        /// <param name="offset">이전달 날짜를 몇개 표시해야하는지 카운트</param>
         private void AddPreviousMonthDays(DateTime targetMonth, int offset)
         {
             if (offset == 0) return;
@@ -99,22 +108,37 @@ namespace TODO_List.ViewModel
 
             for (int day = startDay; day <= daysInMonth; day++)
             {
+                DateTime date = new DateTime(targetMonth.Year, targetMonth.Month, day); // 날짜 객체 생성
                 Days.Add(new CalendarDay
                 {
                     DayNumber = day,
+                    DayOfWeek = date.DayOfWeek,
+                    IsHoliday = HolidayProvider.IsHoliday(date),
+                    IsCurrentMonth = false,
                 });
             }
         }
 
+        /// <summary>
+        /// 현재 표시되는 달력에서 다음달에 해당하는 부분의 날짜를 채워주는 함수
+        /// </summary>
+        /// <param name="targetMonth">다음달이 몇년 몇월인지 매개변수로 넣어야함</param>
+        /// <param name="offset">다음달 날짜를 몇개 표시해야하는지 카운트</param>
         private void AddNextMonthDays(DateTime targetMonth, int offset)
         {
+            if (offset == 0) return;
+
             int daysInMonth = DateTime.DaysInMonth(targetMonth.Year, targetMonth.Month);
 
             for (int day = 1; day <= offset; day++)
             {
+                DateTime date = new DateTime(targetMonth.Year, targetMonth.Month, day); // 날짜 객체 생성
                 Days.Add(new CalendarDay
                 {
                     DayNumber = day,
+                    DayOfWeek = date.DayOfWeek,
+                    IsHoliday = HolidayProvider.IsHoliday(date),
+                    IsCurrentMonth = false,
                 });
             }
         }

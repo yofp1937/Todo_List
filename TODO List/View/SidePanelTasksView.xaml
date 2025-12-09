@@ -1,0 +1,22 @@
+<!-- Side Panel의 할 일, 끝난 일 View 생성 -->
+<UserControl x:Class="TODO_List.View.SidePanelTasksView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Border Padding="10">
+        <Grid>
+            <Grid.RowDefinitions>
+              <!-- 할 일 Line과 끝난 일 Line 나누기 -->
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Style="{StaticResource BaseBorderStyle}" Margin="0,0,0,5">
+                <TextBlock Text="할 일" FontSize="15" FontWeight="Bold"/>
+            </Border>
+            <Border Grid.Row="1" Style="{StaticResource BaseBorderStyle}" Margin="0,5,0,0">
+                <TextBlock Text="끝난 일" FontSize="15" FontWeight="Bold"/>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>
