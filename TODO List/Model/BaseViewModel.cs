@@ -2,7 +2,11 @@
  * INotifyPropertyChaged를 사용하는 View들의 기반 클래스
  */
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Input;
+using TODO_List.Common.Commands;
 
 namespace TODO_List.Model
 {
@@ -10,11 +14,17 @@ namespace TODO_List.Model
     {
         #region Property
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        public ICommand? DragMoveWindowCommand { get; private set; }
+        public ICommand? CloseWindowCommand { get; private set; }
         #endregion
 
         #region 생성자
         public BaseViewModel()
         {
+            CloseWindowCommand = new RelayCommand(CloseWindowExecute);
+            DragMoveWindowCommand = new RelayCommand(MoveWindowExecute);
+
             RegisterICommands(); // 모든 자식 클래스에서 강제로 실행됨
         }
         #endregion
@@ -45,6 +55,29 @@ namespace TODO_List.Model
             // UI 업데이트를 위해 PropertyChanged 이벤트 발생
             OnPropertyChanged(propertyName);
             return true;
+        }
+        #endregion
+
+        #region ICommand 연동 메서드
+        private void MoveWindowExecute(object? obj)
+        {
+            if (obj is UIElement element)
+            {
+                Window window = Window.GetWindow(element);
+                if (window != null)
+                {
+                    // Debug.WriteLine("BaseViewModel - DragMoveWindowCommand - MoveWindowExecute");
+                    window.DragMove();
+                }
+            }
+        }
+
+        private void CloseWindowExecute(object? obj)
+        {
+            if (obj is Window window)
+            {
+                window.Close();
+            }
         }
         #endregion
 

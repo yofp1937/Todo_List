@@ -13,21 +13,5 @@ namespace TODO_List.View
         {
             InitializeComponent();
         }
-
-        private Window GetMainWindow()
-        {
-            return Window.GetWindow(this);
-        }
-
-        #region MoveWindow
-        private void Border_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            Window window = GetMainWindow();
-            if (window != null && e.LeftButton == MouseButtonState.Pressed)
-            {
-                window.DragMove();
-            }
-        }
-        #endregion
     }
 }

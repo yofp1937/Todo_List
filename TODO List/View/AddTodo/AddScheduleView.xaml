@@ -1,0 +1,10 @@
+﻿<UserControl x:Class="TODO_List.View.AddTodo.AddScheduleView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Padding="10">
+        <StackPanel>
+            <TextBlock Text="일정 추가 (날짜 선택)" FontWeight="Bold" Margin="0,0,0,10"/>
+            <DatePicker/>
+        </StackPanel>
+    </Border>
+</UserControl>

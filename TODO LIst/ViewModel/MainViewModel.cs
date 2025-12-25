@@ -7,7 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using TODO_List.Common.Commands;
 using TODO_List.Model;
-using TODO_List.View;
+using TODO_List.View.AddTodo;
 
 namespace TODO_List.ViewModel
 {
@@ -20,9 +20,7 @@ namespace TODO_List.ViewModel
         // MainTitleBar에 존재하는 버튼들은 MainViewModel에서 관리
         public ICommand? MinimizeWindowCommand { get; private set; }
         public ICommand? MaximizeWindowCommand { get; private set; }
-        public ICommand? CloseWindowCommand { get; private set; }
         public ICommand? ChangeWindowOpacityCommand { get; private set; }
-        public ICommand? DragMoveWindowCommand { get; private set; }
         private double _windowOpacity = 100.0;
         public double WindowOpacity
         {
@@ -54,9 +52,7 @@ namespace TODO_List.ViewModel
         {
             MinimizeWindowCommand = new RelayCommand(MinimizeWindowExecute);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindowExecute);
-            CloseWindowCommand = new RelayCommand(CloseWindowExecute);
             ChangeWindowOpacityCommand = new RelayCommand(ChangeWindowOpacityExecute);
-            DragMoveWindowCommand = new RelayCommand(MoveWindowExecute);
 
             PreviousMonthCommand = new RelayCommand(_ => CalendarVM.CurrentMonth = CalendarVM.CurrentMonth.AddMonths(-1));
             NextMonthCommand = new RelayCommand(_ => CalendarVM.CurrentMonth = CalendarVM.CurrentMonth.AddMonths(1));
@@ -84,14 +80,6 @@ namespace TODO_List.ViewModel
             }
         }
 
-        private void CloseWindowExecute(object? obj)
-        {
-            if (obj is Window window)
-            {
-                window.Close();
-            }
-        }
-
         private void ChangeWindowOpacityExecute(object? obj)
         {
             if (obj is double opacityValue && Application.Current.MainWindow != null)
@@ -99,19 +87,6 @@ namespace TODO_List.ViewModel
                 Application.Current.MainWindow.Opacity = opacityValue / 100.0;
             }
         }
-
-        private void MoveWindowExecute(object? obj)
-        {
-            if (obj is UIElement element)
-            {
-                Window window = Window.GetWindow(element);
-                if (window != null)
-                {
-                    window.DragMove();
-                }
-            }
-        }
-
 
         private void OpenAddTasksMenuExecute(object? obj)
         {
@@ -135,6 +110,7 @@ namespace TODO_List.ViewModel
             var todoVM = new TodoViewModel(false);
             
             var addWindow = new AddTodoWindow(todoVM);
+            addWindow.Owner = Application.Current.MainWindow;
             addWindow.ShowDialog();
         }
 
@@ -144,6 +120,7 @@ namespace TODO_List.ViewModel
             var todoVM = new TodoViewModel(true);
 
             var addWindow = new AddTodoWindow(todoVM);
+            addWindow.Owner = Application.Current.MainWindow;
             addWindow.ShowDialog();
         }
     }

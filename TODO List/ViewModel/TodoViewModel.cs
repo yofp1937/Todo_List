@@ -16,6 +16,8 @@ namespace TODO_List.ViewModel
         // 1. 데이터를 추가할때 일정 추가인지 규칙 추가인지 확인하는 용도
         public bool IsRoutine { get; }
 
+        public string TitleText { get; }
+
         // 1-1. 일정 추가일 경우 일정의 날짜 저장
         private DateTime _dueDate = DateTime.Today;
         public DateTime DueDate
@@ -64,6 +66,8 @@ namespace TODO_List.ViewModel
         public TodoViewModel(bool isRoutine)
         {
             IsRoutine = isRoutine;
+
+            TitleText = isRoutine ? "규칙 추가" : "일정 추가";
         }
 
         protected override void RegisterICommands()

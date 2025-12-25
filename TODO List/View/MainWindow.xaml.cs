@@ -14,7 +14,6 @@ namespace TODO_List.View
         {
             InitializeComponent();
 
-            // DataContext 설정
             _mvm = new MainViewModel();
             DataContext = _mvm;
         }
