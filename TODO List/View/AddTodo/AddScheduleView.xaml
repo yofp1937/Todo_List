@@ -1,10 +1,23 @@
-﻿<UserControl x:Class="TODO_List.View.AddTodo.AddScheduleView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<!-- AddTodoWindow가 일정 추가일때 컨트롤 배치 -->
+<UserControl x:Class="TODO_List.View.AddTodo.AddScheduleView"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Border Padding="10">
-        <StackPanel>
-            <TextBlock Text="일정 추가 (날짜 선택)" FontWeight="Bold" Margin="0,0,0,10"/>
-            <DatePicker/>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <!-- 제목 -->
+            <DockPanel Margin="0,5,0,5">
+                <TextBlock Style="{StaticResource TitleTextBlock}"/>
+                <TextBox Style="{StaticResource TitleTextBox}"/>
+            </DockPanel>
+            
+            <!-- 날짜 -->
+            <DockPanel>
+                <TextBlock Text="날짜: " Style="{StaticResource TextBlock15ptBold}"/>
+                <DatePicker SelectedDate="{Binding StartDate}"/>
+            </DockPanel>
+            
+            <!-- 내용 입력 -->
+            <TextBox Style="{StaticResource ContentTextBox}" Margin="0,10"/>
         </StackPanel>
     </Border>
 </UserControl>

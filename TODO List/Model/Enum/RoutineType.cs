@@ -3,7 +3,7 @@
  */
 namespace TODO_List.Model.Enum
 {
-    public enum RootineType
+    public enum RoutineType
     {
         None, // 일반 일정
         Daily, // 매일

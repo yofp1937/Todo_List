@@ -12,10 +12,9 @@ namespace TODO_List.View
 
         public MainWindow()
         {
-            InitializeComponent();
-
             _mvm = new MainViewModel();
             DataContext = _mvm;
+            InitializeComponent();
         }
     }
 }

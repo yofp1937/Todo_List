@@ -1,0 +1,114 @@
+﻿<!-- AddTodoWindow에서 사용될 Style 정의 -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:view="clr-namespace:TODO_List.View.AddTodo">
+
+    <!-- 조건에따라 Window 창의 Width 값 변경 -->
+    <Style TargetType="Window" x:Key="TodoWindowChrome" BasedOn="{StaticResource CustomWindowChrome}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsRoutine}" Value="true">
+                <Setter Property="Width" Value="600"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsRoutine}" Value="false">
+                <Setter Property="Width" Value="300"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- 조건에따라 ContentControl의 내용 변경 -->
+    <Style TargetType="ContentControl" x:Key="TodoContentStyle">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsRoutine}" Value="true">
+                <Setter Property="ContentTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <view:AddRoutineView/>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsRoutine}" Value="false">
+                <Setter Property="ContentTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <view:AddScheduleView/>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!-- 일정, 규칙 추가 공통 제목(TextBlock) 스타일 -->
+    <Style TargetType="TextBlock" x:Key="TitleTextBlock" BasedOn="{StaticResource TextBlock15ptBold}">
+        <Setter Property="Text" Value="제목: "/>
+    </Style>
+    <!-- 일정, 규칙 추가 공통 제목(TextBox) 스타일 -->
+    <Style TargetType="TextBox" x:Key="TitleTextBox">
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Text" Value="{Binding TitleTextBox, UpdateSourceTrigger=PropertyChanged}"/>
+    </Style>
+    <!-- 일정, 규칙 추가 공통 내용(TextBox) 스타일 -->
+    <Style TargetType="TextBox" x:Key="ContentTextBox" BasedOn="{StaticResource TextBoxPlaceHolder}">
+        <Setter Property="Tag" Value="내용을 입력하세요."/>
+        <Setter Property="Height" Value="100"/>
+        <Setter Property="Text" Value="{Binding ContentTextBox, UpdateSourceTrigger=PropertyChanged}"/>
+    </Style>
+
+    <!-- 규칙 추가의 종료 날짜를 IsIndefinite에따라 활성화/비활성화 -->
+    <Style TargetType="DatePicker" x:Key="AddRoutineEndDate">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsIndefinite}" Value="true">
+                <Setter Property="IsEnabled" Value="False"/>
+                <Setter Property="Opacity" Value="0.5"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- 월간 규칙 추가 ListBox -->
+    <Style TargetType="ListBox" x:Key="MonthlySelectedDaysListBox">
+        <Setter Property="SelectionMode" Value="Extended"/>
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding StringFormat={}{0}일}"/>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- 연간 규칙 추가의 날짜 선택을 연도는 안보이게끔 적용 -->
+    <Style TargetType="DatePicker" x:Key="YearlyRoutineDatePicker">
+        <Setter Property="Width" Value="70"/>
+        <Setter Property="SelectedDateFormat" Value="Short"/>
+        <Style.Resources>
+            <Style TargetType="DatePickerTextBox">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="DatePickerTextBox">
+                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                <TextBox Text="{Binding Path=SelectedDate, RelativeSource={RelativeSource AncestorType=DatePicker},
+                                             StringFormat={}{0:MM-dd}, Mode=OneWay}" 
+                                             IsReadOnly="True" BorderThickness="0" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Style.Resources>
+    </Style>
+
+    <!-- 연간 규칙 추가 ListBox -->
+    <Style TargetType="ListBox" x:Key="YearlySelectedDaysListBox">
+        <Setter Property="SelectionMode" Value="Extended"/>
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding StringFormat={}{0:MM월 dd일}}"/>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+</ResourceDictionary>

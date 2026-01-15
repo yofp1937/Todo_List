@@ -11,28 +11,29 @@ using TODO_List.View.AddTodo;
 
 namespace TODO_List.ViewModel
 {
-    public class MainViewModel : BaseViewModel
+    public class MainViewModel : WindowBaseViewModel
     {
         #region Property
         public CalendarViewModel CalendarVM { get; private set; }
-        public TodoViewModel? TodoVM { get; private set; }
+        public AddTodoViewModel? TodoVM { get; private set; }
 
-        // MainTitleBar에 존재하는 버튼들은 MainViewModel에서 관리
-        public ICommand? MinimizeWindowCommand { get; private set; }
-        public ICommand? MaximizeWindowCommand { get; private set; }
-        public ICommand? ChangeWindowOpacityCommand { get; private set; }
         private double _windowOpacity = 100.0;
         public double WindowOpacity
         {
             get => _windowOpacity;
             set
             {
-                if(SetProperty(ref _windowOpacity, value))
+                if (SetProperty(ref _windowOpacity, value))
                 {
                     ChangeWindowOpacityCommand?.Execute(value);
                 }
             }
         }
+
+        // MainTitleBar에 존재하는 버튼들은 MainViewModel에서 관리
+        public ICommand? MinimizeWindowCommand { get; private set; }
+        public ICommand? MaximizeWindowCommand { get; private set; }
+        public ICommand? ChangeWindowOpacityCommand { get; private set; }
         public ICommand? PreviousMonthCommand { get; private set; }
         public ICommand? NextMonthCommand { get; private set; }
         public ICommand? CalendarChangeCommand { get; private set; }
@@ -50,6 +51,7 @@ namespace TODO_List.ViewModel
 
         protected override void RegisterICommands()
         {
+            base.RegisterICommands();
             MinimizeWindowCommand = new RelayCommand(MinimizeWindowExecute);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindowExecute);
             ChangeWindowOpacityCommand = new RelayCommand(ChangeWindowOpacityExecute);
@@ -107,7 +109,7 @@ namespace TODO_List.ViewModel
         private void OpenAddScheduleWindowExecute(object? obj)
         {
             // Debug.WriteLine("OpenAddScheduleWindowExecute");
-            var todoVM = new TodoViewModel(false);
+            var todoVM = new AddTodoViewModel(false);
             
             var addWindow = new AddTodoWindow(todoVM);
             addWindow.Owner = Application.Current.MainWindow;
@@ -117,7 +119,7 @@ namespace TODO_List.ViewModel
         private void OpenAddRoutineWindowExecute(object? obj)
         {
             // Debug.WriteLine("OpenAddRoutineWindowExecute");
-            var todoVM = new TodoViewModel(true);
+            var todoVM = new AddTodoViewModel(true);
 
             var addWindow = new AddTodoWindow(todoVM);
             addWindow.Owner = Application.Current.MainWindow;

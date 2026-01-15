@@ -2,7 +2,6 @@
  * 메인 UI에 달력을 자동으로 생성해주는 클래스
  */
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using TODO_List.Model;
 using TODO_List.Model.DataClass;
 
@@ -42,8 +41,6 @@ namespace TODO_List.ViewModel
         {
             CurrentMonth = DateTime.Today; // 2.CurrentMonth 설정으로 달력 동적 생성
         }
-
-        protected override void RegisterICommands() { }
         #endregion
 
         #region 달력 생성

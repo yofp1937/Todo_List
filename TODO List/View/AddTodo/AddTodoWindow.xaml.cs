@@ -6,11 +6,10 @@ namespace TODO_List.View.AddTodo
     public partial class AddTodoWindow : Window
 
     {
-        public AddTodoWindow(TodoViewModel todoVM)
+        public AddTodoWindow(AddTodoViewModel todoVM)
         {
-            InitializeComponent();
-
             this.DataContext = todoVM;
+            InitializeComponent();
         }
     }
 }

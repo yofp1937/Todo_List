@@ -5,11 +5,12 @@
              Startup="Application_Startup">
     <!-- 전체 애플리케이션에서 사용할 공통 스타일은 App.xaml에 정의하는것이 좋다고함 -->
     <Application.Resources>
-        <!-- 외부 스타일 로드 -->
+        <!-- 외부 스타일 로드(Styles.xaml 파일 추가시 여기에서 경로를 추가해줘야함) -->
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resource/Style/BaseStyles.xaml"/>
                 <ResourceDictionary Source="/Resource/Style/CalendarStyles.xaml"/>
+                <ResourceDictionary Source="/Resource/Style/AddTodoWindowStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

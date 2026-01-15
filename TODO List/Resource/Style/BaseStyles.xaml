@@ -1,6 +1,6 @@
 ﻿<!-- Base Style을 정의하는곳 -->
-    <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
     WindowChrome 스타일
@@ -27,12 +27,119 @@
         </Setter>
     </Style>
 
-    <!-- Base Border 스타일 -->
-    <Style TargetType="Border" x:Key="BaseBorderStyle">
-        <Setter Property="Padding" Value="5"/>
-        <Setter Property="Margin" Value="5, 0, 0, 5"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="Black"/>
+    <!-- TextBlock Base (15pt, Bold) -->
+    <Style TargetType="TextBlock" x:Key="TextBlock15ptBold">
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+    
+    <!-- TextBlock Italic (12pt, Italic) -->
+    <Style TargetType="TextBlock" x:Key="TextBlockItalic">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontStyle" Value="Italic"/>
+        <Setter Property="Foreground" Value="Crimson"/>
+    </Style>
+
+    <!--
+    TextBox PlaceHolder 구현
+    사용법: Style="{StaticResource TextBoxPlacHolder}" 선언 후 컨트롤 내에 Tag="PlaceHolder로 보여주고싶은 내용" 입력
+    -->
+    <Style TargetType="TextBox" x:Key="TextBoxPlaceHolder">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Grid>
+                        <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                    Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false"
+                                               HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <TextBlock x:Name="PlaceHolder" Text="{TemplateBinding Tag}" 
+                                       FontStyle="Italic" Foreground="Gray" IsHitTestVisible="False" Visibility="Collapsed"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Text" Value="">
+                            <Setter TargetName="PlaceHolder" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!--
+    RadioButton의 Text가 옆에 표시되는걸 아래쪽에 표시되게 만들어주는 Style
+    -->
+    <Style TargetType="RadioButton" x:Key="BottomTextRadioButton">
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <StackPanel Orientation="Vertical" Background="Transparent">
+                        <Grid Height="20" Width="20" HorizontalAlignment="Center">
+                            <Ellipse x:Name="OuterCircle" Stroke="Black" StrokeThickness="1" Fill="White"/>
+                            <Ellipse x:Name="CheckMark" Fill="DodgerBlue" Margin="4" Visibility="Collapsed"/>
+                        </Grid>
+
+                        <ContentPresenter x:Name="contentPresenter" Margin="0,5,0,0" 
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <ContentPresenter.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="{Binding FontSize, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                </Style>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </StackPanel>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="OuterCircle" Property="Stroke" Value="DodgerBlue"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!--
+    CheckBox의 Text가 옆에 표시되는걸 아래쪽에 표시되게 만들어주는 Style
+    -->
+    <Style TargetType="CheckBox" x:Key="BottomTextCheckBox">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <StackPanel Orientation="Vertical" Background="Transparent">
+                        <Grid Height="20" Width="20" HorizontalAlignment="Center">
+                            <Border x:Name="OuterBorder" CornerRadius="1"
+                                        BorderBrush="Black"  BorderThickness="1" Background="White" />
+                            <Rectangle x:Name="CheckMark" Visibility="Collapsed"
+                                            Fill="DodgerBlue" Margin="4" />
+                        </Grid>
+
+                        <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"
+                                        FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}"
+                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="OuterBorder" Property="BorderBrush" Value="DodgerBlue"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="OuterBorder" Property="BorderBrush" Value="DodgerBlue"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 </ResourceDictionary>

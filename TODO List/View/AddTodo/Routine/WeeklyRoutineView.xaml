@@ -1,0 +1,21 @@
+﻿<!-- 규칙 추가 Window에서 주간 RadioButton 클릭하면 오른쪽 공간에 구성되는 View -->
+<UserControl x:Class="TODO_List.View.AddTodo.Routine.WeeklyRoutineView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Padding="5">
+        <ItemsControl ItemsSource="{Binding DayOptions}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Rows="1" IsItemsHost="True"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox Content="{Binding DayName}" IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                    Foreground="{Binding TextColor}" Style="{StaticResource BottomTextCheckBox}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Border>
+</UserControl>

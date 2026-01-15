@@ -1,13 +1,14 @@
-﻿<Window x:Class="TODO_List.View.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:view="clr-namespace:TODO_List.View"
+﻿<!-- 메인 Window -->
+<Window x:Class="TODO_List.View.MainWindow"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:view="clr-namespace:TODO_List.View"
         
-        Title="TODO List" Height="800" MinHeight="600" Width="1100" MinWidth="750"
-        WindowStyle="None"
-        Style="{StaticResource CustomWindowChrome}"
-        AllowsTransparency="True"
-        Background="LightGray">
+              Title="TODO List" Height="800" MinHeight="600" Width="1100" MinWidth="750"
+              WindowStyle="None"
+              Style="{StaticResource CustomWindowChrome}"
+              AllowsTransparency="True"
+              Background="LightGray">
 
     <Grid>
         <!-- 전체 영역 크기 조절 -->

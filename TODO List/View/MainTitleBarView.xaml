@@ -1,7 +1,8 @@
-﻿<UserControl x:Class="TODO_List.View.MainTitleBarView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:util="clr-namespace:TODO_List.Common.Util">
+﻿<!-- 타이틀바와 하단바(달력 조정)까지 생성 -->
+<UserControl x:Class="TODO_List.View.MainTitleBarView"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:util="clr-namespace:TODO_List.Common.Util">
 
     <Grid>
         <Grid.RowDefinitions>
