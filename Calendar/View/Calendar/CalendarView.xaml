@@ -1,0 +1,78 @@
+﻿<!-- WeekHeader, Calendar View 생성 -->
+<UserControl x:Class="Calendar.View.Calendar.CalendarView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Border Padding="10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <!-- WeekHeader Line과 Calendar Line 나누기 -->
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- WeekHeader 생성 -->
+            <ItemsControl Grid.Row="0" ItemsSource="{Binding WeekDays}" Style="{StaticResource BaseCalendarItemsControl}">
+                <!-- Panel에 들어갈 Element들을 정의하는 곳 -->
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource WeekHeaderBorderStyle}">
+                            <TextBlock Text="{Binding}" Style="{StaticResource WeekHeaderTextStyle}"/>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Calendar 생성 -->
+            <!-- Calendar 내부 데이터는 여러가지 조건에따라 값이 변하기때문에 MultidateTrigger를 이용하는게 좋다고 함(CalendarStyles.xaml) -->
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding Days}" Style="{StaticResource BaseCalendarItemsControl}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Style="{StaticResource CalendarDayButtonStyle}" Command="{Binding DataContext.SelectDayCommand,
+                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}">
+                            <StackPanel>
+                                <!-- 오늘 표시용 Ellipse와 날짜를 겹치게하기위해 Grid 배치 -->
+                                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0" HorizontalAlignment="Left">
+                                        <Ellipse Style="{StaticResource TodayEllipseStyle}"/>
+                                        <TextBlock Text="{Binding DayNumber}" Style="{StaticResource CalendarDayTextStyle}"/>
+                                    </Grid>
+                                    <TextBlock Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                   Text="{Binding HolidayName}" Style="{StaticResource CalendarHolidayTextStyle}"/>
+                                </Grid>
+
+                                <!-- 해당 날짜의 일정, 규칙 표시 -->
+                                <!-- 자식 요소가 자신의 순서를 알 수 있게 AlternationCount 사용 -->
+                                <ItemsControl ItemsSource="{Binding AllTasksView}" AlternationCount="30">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid x:Name="TasksRootGrid" Style="{StaticResource CalendarTasksRootGridStyle}">
+                                                <TextBlock x:Name="SummaryText" Style="{StaticResource SummaryTextBlock}"/>
+                                                <StackPanel x:Name="TaskStackPanel" Style="{StaticResource TaskStackPanel}">
+                                                    <TextBlock Style="{StaticResource CalendarSymbolStyle}"/>
+                                                    <TextBlock Text="{Binding TodoTitle}" Style="{StaticResource CalendarTaskTextStyle}"/>
+                                                </StackPanel>
+                                            </Grid>
+                                            <DataTemplate.Triggers>
+                                                <!-- TodoText를 몇번쨰까지 표시할건지 (n넣으면 n번째까지 TodoText 표시, n+1번째는 SummaryText 표시됨) -->
+                                                <DataTrigger Binding="{Binding Tag, ElementName=TasksRootGrid}" Value="6">
+                                                    <Setter TargetName="SummaryText" Property="Visibility" Value="Visible"/>
+                                                    <Setter TargetName="TaskStackPanel" Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                
+                            </StackPanel>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Border>
+</UserControl>

@@ -1,0 +1,32 @@
+﻿<!-- ListWindow에서 서로 다른 List를 보여주기 위한 View -->
+<UserControl x:Class="Calendar.View.ListWindow.RoutineDataListView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <ListView ItemsSource="{Binding RoutineDataList}" ItemContainerStyle="{StaticResource ListViewItemDoubleClickStyle}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Single"
+                  SelectedItem="{Binding DataContext.SelectedItem, RelativeSource={RelativeSource AncestorType=Window}}">
+        <ListView.View>
+            <GridView>
+                <GridViewColumn Width="Auto">
+                    <GridViewColumn.Header>
+                        <CheckBox IsChecked="{Binding DataContext.IsAllChecked, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                    </GridViewColumn.Header>
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn Header="제목" DisplayMemberBinding="{Binding TodoTitle}" Width="Auto"/>
+                <GridViewColumn Header="시작 날짜" CellTemplate="{StaticResource StartDateCellTemplate}" Width="Auto"/>
+                <GridViewColumn Header="종료 날짜" CellTemplate="{StaticResource EndDateCellTemplate}" Width="Auto"/>
+                <GridViewColumn Header="반복 형태" CellTemplate="{StaticResource RoutineTypeCellTemplate}" Width="Auto"/>
+                <GridViewColumn Header="주기" CellTemplate="{StaticResource FrequencyCellTemplate}" Width="Auto"/>
+                <GridViewColumn Header="내용" DisplayMemberBinding="{Binding TodoContent}" Width="350"/>
+            </GridView>
+        </ListView.View>
+    </ListView>
+    
+</UserControl>

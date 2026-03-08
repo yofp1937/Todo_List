@@ -1,0 +1,24 @@
+﻿<!-- TodoWindow가 일정 추가일때 컨트롤 배치 -->
+<UserControl x:Class="Calendar.View.TodoWindow.ScheduleView"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <Border Padding="10" FocusManager.FocusedElement="{Binding ElementName=TitleInput}">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <!-- 제목 -->
+            <DockPanel Margin="0,5,0,5">
+                <TextBlock x:Name="TitleInput" Style="{StaticResource TitleTextBlock}"/>
+                <TextBox Text="{Binding TitleTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TitleTextBox}"/>
+            </DockPanel>
+            
+            <!-- 날짜 -->
+            <DockPanel>
+                <TextBlock Text="날짜: " Style="{StaticResource TextBlock15ptBold}"/>
+                <DatePicker SelectedDate="{Binding StartDate}"/>
+            </DockPanel>
+            
+            <!-- 내용 입력 -->
+            <TextBox Text="{Binding ContentTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ContentTextBox}"/>
+        </StackPanel>
+    </Border>
+</UserControl>

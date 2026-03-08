@@ -1,0 +1,88 @@
+﻿<!-- TodoWindow가 규칙 추가일때 컨트롤 배치 -->
+<UserControl x:Class="Calendar.View.TodoWindow.RoutineView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:view="clr-namespace:Calendar.View.TodoWindow.Routine"
+                   xmlns:vmRoutine="clr-namespace:Calendar.ViewModel.TodoWindow.Routine">
+
+    <Border Padding="10">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <!-- 주기 선택(매일, 주간, 월간, 연간) -->
+            <Border Grid.Column="0" Padding="5" FocusManager.FocusedElement="{Binding ElementName=TitleInput}">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                    <!-- 제목 -->
+                    <DockPanel Margin="0,5,0,5">
+                        <TextBlock Style="{StaticResource TitleTextBlock}"/>
+                        <TextBox x:Name="TitleInput" Style="{StaticResource TitleTextBox}"
+                                     Text="{Binding TitleTextBox, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+
+                    <!-- 주기(일간, 주간, 월간, 연간) 선택 -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <StackPanel.Resources>
+                            <Style TargetType="RadioButton" BasedOn="{StaticResource BottomTextRadioButton20}">
+                                <Setter Property="Margin" Value="20, 5, 20, 5"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        <RadioButton Content="일간" IsChecked="{Binding SelectedRoutineType, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Daily}"/>
+                        <RadioButton Content="주간" IsChecked="{Binding SelectedRoutineType, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Weekly}"/>
+                        <RadioButton Content="월간" IsChecked="{Binding SelectedRoutineType, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Monthly}"/>
+                        <RadioButton Content="연간"  IsChecked="{Binding SelectedRoutineType, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Yearly}"/>
+                    </StackPanel>
+
+                    <!-- 날짜 -->
+                    <DockPanel>
+                        <TextBlock Text="시작 날짜: " Style="{StaticResource TextBlock15ptBold}"/>
+                        <DatePicker SelectedDate="{Binding StartDate}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <TextBlock Text="종료 날짜: " Style="{StaticResource TextBlock15ptBold}"/>
+                        <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay}" Style="{StaticResource AddRoutineEndDate}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0,5">
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                            <TextBlock Text="빈도: " Style="{StaticResource TextBlock15ptBold}"/>
+                            <ComboBox Width="90" ItemsSource="{Binding ComboBoxItems}" SelectedIndex="{Binding SelectedComboBoxItem, Mode=TwoWay}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock Text="기한 없음" Style="{StaticResource IndefiniteTextBlock}"/>
+                            <CheckBox IsChecked="{Binding IsIndefinite}" Style="{StaticResource IndefiniteCheckBox}"/>
+                        </StackPanel>
+                    </DockPanel>
+
+                    <!-- 내용 입력 -->
+                    <TextBox Text="{Binding ContentTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ContentTextBox}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- 주기별 오른쪽 화면 전환 -->
+            <Border Grid.Column="1" Padding="5">
+                <ContentControl Content="{Binding CurrentRoutineVM}"> <!-- CurrentRoutineVM에따라 ViewModel도 변경됨 -->
+                    <ContentControl.Resources>
+                        <DataTemplate DataType="{x:Type vmRoutine:DailyRoutineViewModel}">
+                            <TextBlock Text="일간 반복은 추가 설정이 없습니다." Style="{StaticResource DailyRoutineTextBlock}"/>
+                        </DataTemplate>
+
+                        <DataTemplate DataType="{x:Type vmRoutine:WeeklyRoutineViewModel}">
+                            <view:WeeklyRoutineView/>
+                        </DataTemplate>
+
+                        <DataTemplate DataType="{x:Type vmRoutine:MonthlyRoutineViewModel}">
+                            <view:MonthlyRoutineView/>
+                        </DataTemplate>
+
+                        <DataTemplate DataType="{x:Type vmRoutine:YearlyRoutineViewModel}">
+                            <view:YearlyRoutineView/>
+                        </DataTemplate>
+                    </ContentControl.Resources>
+                </ContentControl>
+            </Border>
+            
+        </Grid>
+    </Border>
+</UserControl>

@@ -1,0 +1,39 @@
+﻿<!-- Calendar View 상단의 달력 조정, 일정 추가 Bar -->
+<UserControl x:Class="Calendar.View.Calendar.CalendarControlBarView"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- 일정 추가, 년/월 표시, 넘기기 버튼 -->
+    <Border Padding="10">
+        <Grid>
+            <!-- 일정 추가 버튼 -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Stretch">
+                <Button Content="+" Style="{StaticResource CalendarAddTodoBtn}"
+                            Command="{Binding OpenAddTasksMenuCommand}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="일정 추가" Command="{Binding AddScheduleCommand}"/>
+                            <MenuItem Header="규칙 추가" Command="{Binding AddRoutineCommand}"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+            </StackPanel>
+
+            <!-- 년/월 표시, 넘기기 버튼 -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button Content="&lt;" Style="{StaticResource CalendarMoveMonthBtnStyle}" 
+                            Command="{Binding CalendarVM.PreviousMonthCommand}"/>
+                <Button Content="{Binding CalendarVM.CurrentMonthText}" Style="{StaticResource CalendarSetMonthBtnStyle}"
+                            Command="{Binding CalendarVM.CalendarChangeCommand}"/>
+                <Button Content="&gt;" Style="{StaticResource CalendarMoveMonthBtnStyle}"
+                            Command="{Binding CalendarVM.NextMonthCommand}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Stretch">
+                <Button Content="목록" Style="{StaticResource CalendarListBtn}" Command="{Binding OpenListWindowCommand}"/>
+                <Button Content="설정" Style="{StaticResource CalendarSettingBtn}" Command="{Binding OpenSettingWindowCommand}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>
