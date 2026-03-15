@@ -1,8 +1,6 @@
 ﻿/*
  * 규칙이냐 일정이냐에 따라 데이터 저장이 달라서 Base 생성
  */
-using Calendar.Model.DataClass;
-
 namespace Calendar.Model.DataClass.TodoEntities
 {
     public abstract class BaseTodoData : BaseDataClass // UI 연동을 위해 BaseDataClass 상속

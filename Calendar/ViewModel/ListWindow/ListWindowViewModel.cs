@@ -12,7 +12,6 @@ using Calendar.Model.Enum;
 using Calendar.ViewModel.Base;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows.Input;
 
 namespace Calendar.ViewModel.ListWindow
@@ -111,20 +110,20 @@ namespace Calendar.ViewModel.ListWindow
         /// </summary>
         private void LoadDataList()
         {
-            TodoStorage storage = TodoRepository.GetTodoStorage();
+            ITodoStorage storage = TodoRepository.GetTodoStorage();
             ScheduleDataList.Clear();
             RoutineDataList.Clear();
             RoutineRecordList.Clear();
 
             // 데이터를 List에 채우기 전 각 데이터들에 OnItemPropertyChanged이벤트 등록
             // 1. ScheduleData 채우기
-            foreach (ScheduleData schedule in storage.Schedules)
+            foreach (ScheduleData schedule in storage.ScheduleDatas)
             {
                 ConnectEventToData(schedule);
                 ScheduleDataList.Add(schedule);
             }
             // 2. RoutineData 채우기
-            foreach (RoutineData routineData in storage.Routines)
+            foreach (RoutineData routineData in storage.RoutineDatas)
             {
                 ConnectEventToData(routineData);
                 RoutineDataList.Add(routineData);
@@ -184,7 +183,7 @@ namespace Calendar.ViewModel.ListWindow
             if (CheckedList.Count == 0) return;
 
             // 전부 지워질때까지 대기
-            await TodoRepository.DeleteData_AsyncSave(CheckedList.ToList());
+            await TodoRepository.RemoveData_AsyncSave(CheckedList.ToList());
 
             ClearAllCheckBox();
             LoadDataList();

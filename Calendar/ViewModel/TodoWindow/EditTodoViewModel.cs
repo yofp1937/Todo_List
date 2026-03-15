@@ -78,18 +78,18 @@ namespace Calendar.ViewModel.TodoWindow
                 // 1. 과거 데이터면 RoutineRecord만 제거
                 if (today > _routineRecord.Date.Date || _routineData == null)
                 {
-                    _ = TodoRepository.DeleteData_AsyncSave(_routineRecord);
+                    _ = TodoRepository.RemoveData_AsyncSave(_routineRecord);
                 }
                 // 2. 오늘, 미래 규칙이면 RoutineData 제거
                 if (_routineData != null && _routineRecord.Date.Date >= today)
                 {
-                    _ = TodoRepository.DeleteData_AsyncSave(_routineData);
+                    _ = TodoRepository.RemoveData_AsyncSave(_routineData);
                 }
             }
             else
             {
                 if (_scheduleData == null) return;
-                _ = TodoRepository.DeleteData_AsyncSave(_scheduleData);
+                _= TodoRepository.RemoveData_AsyncSave(_scheduleData);
             }
             Messenger.Send(new TodoMessages.RefreshTodoUI());
             CloseWindow();
@@ -184,7 +184,6 @@ namespace Calendar.ViewModel.TodoWindow
                     _ => false
                 };
             }
-            Debug.WriteLine($"CheckRoutineDataModified: 핵심 변수 안변함 false");
             return false;
         }
 
@@ -245,20 +244,15 @@ namespace Calendar.ViewModel.TodoWindow
             if (_routineData == null) return;
 
             // RoutineData의 핵심 데이터가 바뀌었으면
-            if(CheckRoutineDataModified())
+            if (CheckRoutineDataModified())
             {
-                // 기존 루틴은 어제부로 종료하고
-                TodoRepository.GetTodoStorage().FinishedOrRemoveRoutineData(_routineData);
-
-                // 새로운 루틴 생성하여 추가
+                // 새로운 루틴을 만들어 기존 RoutineData 종료, 신규 루틴은 추가 요청
                 RoutineData newData = ApplyRoutineData(new());
-                if(TodoRepository.TempEditRoutineAndRegister(_routineData, newData))
-                    _ = TodoRepository.AddOrUpdateData_AsyncSave(newData);
+                _ = TodoRepository.UpdateRoutineData_AsyncSave(_routineData, newData);
             }
-            // Title, Content만 수정됐으면
             else
             {
-                // 기존 루틴의 Title, Content만 수정하고 저장
+                // Title, Content만 수정됐으면 기존 루틴의 Title, Content만 수정하고 저장
                 _routineData.TodoTitle = TitleTextBox.Trim();
                 _routineData.TodoContent = ContentTextBox?.Trim() ?? string.Empty;
                 _ = TodoRepository.AddOrUpdateData_AsyncSave(_routineData);
@@ -293,12 +287,12 @@ namespace Calendar.ViewModel.TodoWindow
                 ApplyCommonAndStatusData(_routineRecord);
                 _ = TodoRepository.AddOrUpdateData_AsyncSave(_routineRecord);
             }
-            // 2. 그외 주요 데이터를 수정했을 경우 RoutineData를 수정
+            // 2. 그외 주요 데이터를 수정했을 경우 
             else
             {
+                // 2-1. 새로운 루틴을 만들어 기존 RoutineData 종료, 신규 루틴은 추가 요청
                 RoutineData newData = ApplyRoutineData(new());
-                if(TodoRepository.TempEditRoutineAndRegister(_routineData, newData))
-                    _ = TodoRepository.AddOrUpdateData_AsyncSave(newData);
+                _ = TodoRepository.UpdateRoutineData_AsyncSave(_routineData, newData);
             }
         }
         #endregion

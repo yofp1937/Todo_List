@@ -5,7 +5,6 @@ using Calendar.Common.Commands;
 using Calendar.Common.Interface;
 using Calendar.Common.Service;
 using Calendar.Common.Util;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 

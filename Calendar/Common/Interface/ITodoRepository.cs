@@ -14,37 +14,48 @@ namespace Calendar.Common.Interface
     public interface ITodoRepository
     {
         /// <summary>
-        /// 데이터 저장 및 업데이트 (성공 여부를 bool로 반환)
+        /// ITodoStorage를 반환해줍니다.
         /// </summary>
-        Task<bool> AddOrUpdateData_AsyncSave<T>(T data) where T : class;
+        /// <returns>TodoStorage 반환</returns>
+        ITodoStorage GetTodoStorage();
 
         /// <summary>
-        /// 데이터 제거
+        /// 전달받은 data를 저장소에 추가(동일한 Id를 가진 data가 존재하면 수정)해달라고 ITodoStorage에 요청하고,<br/>
+        /// ITodoStorage에서 처리가 끝나면 ITodoStorage의 상태를 Json으로 비동기 저장합니다.
         /// </summary>
-        Task<bool> DeleteData_AsyncSave<T>(T data) where T : class;
+        /// <param name="data">저장 혹은 수정할 data</param>
+        /// <param name="isNewRoutineData">data가 신규로 저장하는 RoutineData일 경우 True, 아니면 입력하지않거나 False</param>
+        /// <returns>데이터 추가 혹은 수정과 Json 저장까지 성공 시 True, 하나라도 실패 시 False</returns>
+        Task<bool> AddOrUpdateData_AsyncSave<T>(T data, bool isNewRoutineData = false) where T : BaseTodoData;
 
         /// <summary>
-        /// 현재 저장소를 보여줌
+        /// 전달받은 단일 data를 저장소에서 삭제해달라고 ITodoStorage에 요청하고,<br/>
+        /// ITodoStorage에서 처리가 끝나면 ITodoStorage의 상태를 Json으로 비동기 저장합니다.
         /// </summary>
-        TodoStorage GetTodoStorage();
+        /// <param name="data">삭제할 단일 data</param>
+        /// <returns>데이터 삭제와 Json 저장까지 성공 시 True, 하나라도 실패 시 False</returns>
+        Task<bool> RemoveData_AsyncSave<T>(T data) where T : BaseTodoData;
 
         /// <summary>
-        /// 3초 뒤 데이터 저장
+        /// 전달받은 여러 data를 저장소에서 삭제해달라고 ITodoStorage에 요청하고,<br/>
+        /// ITodoStorage에서 처리가 끝나면 ITodoStorage의 상태를 Json으로 비동기 저장합니다.
         /// </summary>
-        void RequestSaveAfter3Seconds();
+        /// <param name="data">삭제할 여러 data</param>
+        /// <returns>데이터 삭제와 Json 저장까지 성공 시 True, 하나라도 실패 시 False</returns>
+        Task<bool> RemoveData_AsyncSave<T>(IEnumerable<T> datas) where T : BaseTodoData;
 
         /// <summary>
-        /// 비정상 종료일때 데이터 저장 대기
+        /// existingData로 전달받은 RoutineData는 ITodoRepository에게 삭제를 요청하고,<br/>
+        /// newData로 전달받은 RoutineData는 ITodoRepository에게 추가를 요청한 뒤 ITodoStorage의 상태를 Json으로 비동기 저장합니다.
+        /// </summary>
+        /// <param name="existingData">삭제를 요청할 RoutineData</param>
+        /// <param name="newData">추가를 요청할 RoutineData</param>
+        /// <returns>데이터 수정, 추가와 Json 저장까지 성공 시 True, 하나라도 실패 시 False</returns>
+        Task<bool> UpdateRoutineData_AsyncSave(RoutineData existingData, RoutineData newData);
+
+        /// <summary>
+        /// 프로그램이 종료될때 저장소의 상태 저장을 요청합니다.
         /// </summary>
         void WaitingForSavingData();
-
-        /// <summary>
-        /// 임시 사용
-        /// </summary>
-        bool TempEditRoutineAndRegister(RoutineData existingData, RoutineData newData);
-        /// <summary>
-        /// 임시 사용
-        /// </summary>
-        bool TempAddNewRoutine(RoutineData routineData);
     }
 }

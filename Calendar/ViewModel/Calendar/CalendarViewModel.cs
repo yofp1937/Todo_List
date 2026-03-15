@@ -156,14 +156,14 @@ namespace Calendar.ViewModel.Calendar
 
         private void LoadSchedulesAndRoutinesForCurrentCalendar()
         {
-            TodoStorage storage = _todoRepository.GetTodoStorage();
+            ITodoStorage storage = _todoRepository.GetTodoStorage();
 
             foreach (CalendarDayModel day in Days) // 달력의 칸을 하나씩 검사
             {
                 day.DataClear();
 
                 // 1. 일정(Schedule) 검사 (Where은 LINQ 명령어라 List가 아닌 IEnumerable<>로 반환됨)
-                IEnumerable<ScheduleData> todaySchedules = storage.Schedules.Where(s => s.StartDate.Date == day.Date.Date);
+                IEnumerable<ScheduleData> todaySchedules = storage.ScheduleDatas.Where(s => s.StartDate.Date == day.Date.Date);
                 foreach (ScheduleData schedule in todaySchedules)
                 {
                     day.Schedules.Add(schedule);
@@ -175,13 +175,13 @@ namespace Calendar.ViewModel.Calendar
                 HashSet<Guid> guidHash = new();
                 foreach (RoutineRecord record in todayRecords)
                 {
-                    RoutineData? parentRoutine = storage.Routines.FirstOrDefault(r => r.Id == record.ParentRoutineId);
+                    RoutineData? parentRoutine = storage.RoutineDatas.FirstOrDefault(r => r.Id == record.ParentRoutineId);
                     day.RoutineInstances.Add(new RoutineInstance(parentRoutine, record));
                     guidHash.Add(record.ParentRoutineId);
                 }
 
                 // 3. 규칙(RoutineData) 검사
-                foreach (RoutineData routine in storage.Routines)
+                foreach (RoutineData routine in storage.RoutineDatas)
                 {
                     // 이미 RoutineRecord 검사에서 표시한건 건너뛰기
                     if (guidHash.Contains(routine.Id)) continue;

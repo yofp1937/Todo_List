@@ -2,6 +2,8 @@
  * 캘린더 UI 동적 생성용 데이터 클래스
  */
 
+using Calendar.Common.Messages;
+using Calendar.Common.Util;
 using Calendar.Model.DataClass.TodoEntities;
 using System.Collections;
 using System.Collections.ObjectModel;
@@ -141,6 +143,8 @@ namespace Calendar.Model.DataClass
                 {
                     RefreshView();
                 });
+                // Status가 변경되면 Messenger에게 3초후 Json 저장 메서드를 호출해달라고 전송
+                Messenger.Send(new DataMessages.SaveDataAfter3Seconds());
             }
         }
 

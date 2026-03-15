@@ -80,7 +80,7 @@ namespace Calendar.Common.Controller
         public void Dispose()
         {
             _notifyIcon.Visible = false;
-            if(_notifyIcon.ContextMenuStrip != null)
+            if (_notifyIcon.ContextMenuStrip != null)
                 _notifyIcon.ContextMenuStrip.Dispose();
             _notifyIcon.Dispose();
         }

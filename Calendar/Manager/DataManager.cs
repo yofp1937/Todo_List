@@ -2,11 +2,11 @@
  * 프로그램의 데이터 전체 관리
  */
 using Calendar.Common.Interface;
+using Calendar.Common.Messages;
 using Calendar.Common.Util;
 using Calendar.Model;
 using Calendar.Model.DataClass;
 using Calendar.Model.DataClass.TodoEntities;
-using Calendar.Model.Enum;
 using System.Diagnostics;
 using System.IO;
 
@@ -18,12 +18,11 @@ namespace Calendar.Manager
         // Json 파일 저장명
         private const string TodoFileName = "TodoData.json";
         private const string SettingFileName = "Settings.json";
-        private const string RoutineRecordsFolderName = "RoutineRecords";
         // 파일 동시 접근 방지
         private readonly object _fileLock = new object();
 
         // 프로그램 실행 중 메모리에 들고 있을 데이터 객체
-        private TodoStorage _currentStorage;
+        private readonly ITodoStorage _currentStorage;
         private AppSettings _appSettings;
 
         // 3초 뒤 저장 기능 구현을 위한 Token
@@ -35,46 +34,108 @@ namespace Calendar.Manager
         {
             _currentStorage = LoadTodoDataFromFile();
             _appSettings = LoadSettingsFromFile();
-            CheckLastUpdated(_currentStorage);
+            CallCheckLastUpdatedInTodoStorage();
+            SubscribeMessenger();
         }
         #endregion
 
-        #region public
-        public async Task<bool> AddOrUpdateData_AsyncSave<T>(T data) where T : class
-        {
-            if (data is BaseTodoData todoData)
-            {
-                await AddOrUpdateData_AsyncSave(todoData);
-                return true;
-            }
-            return false;
-        }
-
-        public async Task<bool> DeleteData_AsyncSave<T>(T data) where T : class
-        {
-            if (data is BaseTodoData todoData)
-            {
-                await DeleteData_AsyncSave(todoData);
-                return true;
-            }
-            else if (data is IEnumerable<BaseTodoData> todoDataList)
-            {
-                await DeleteData_AsyncSave(todoDataList);
-                return true;
-            }
-            return false;
-        }
-
-        public TodoStorage GetTodoStorage()
+        #region Method
+        #region public Method
+        #region ITodoRepository 구현
+        /// <inheritdoc cref="ITodoRepository.GetTodoStorage"/>
+        public ITodoStorage GetTodoStorage()
         {
             return _currentStorage;
         }
-
-        public void RequestSaveAfter3Seconds()
+        /// <inheritdoc cref="ITodoRepository.AddOrUpdateData_AsyncSave{T}(T, bool)"/>
+        public async Task<bool> AddOrUpdateData_AsyncSave<T>(T data, bool isNewRoutineData = false) where T : BaseTodoData
         {
-            SaveAfter3seconds();
+            try
+            {
+                if (_currentStorage.AddOrUpdateData(data, isNewRoutineData))
+                {
+                    await SaveTodoDataAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DataManager - AddOrUpdateData_AsyncSave]: 오류 발생 {ex}");
+                return false;
+            }
         }
-
+        /// <inheritdoc cref="ITodoRepository.RemoveData_AsyncSave{T}(T)"/>
+        public async Task<bool> RemoveData_AsyncSave<T>(T data) where T : BaseTodoData
+        {
+            try
+            {
+                if(_currentStorage.RemoveData(data))
+                {
+                    await SaveTodoDataAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DataManager - DeleteData_AsyncSave]: 오류 발생 {ex}");
+                return false;
+            }
+        }
+        /// <inheritdoc cref="ITodoRepository.RemoveData_AsyncSave{T}(IEnumerable{T})"/>
+        /// <remarks>datas의 내용물을 하나씩 꺼내 ITodoStroage에 RemoveData를 요청합니다.</remarks>
+        public async Task<bool> RemoveData_AsyncSave<T>(IEnumerable<T> datas) where T : BaseTodoData
+        {
+            try
+            {
+                bool isComplete = false;
+                // datas에 들어있는 data를 하나씩 삭제 요청
+                foreach (var data in datas)
+                {
+                    // 하나라도 삭제에 성공하면 isComplete = true로 변경
+                    if (_currentStorage.RemoveData(data))
+                        isComplete = true;
+                }
+                // 하나라도 삭제됐으면 저장
+                if (isComplete)
+                {
+                    await SaveTodoDataAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DataManager - DeleteData_AsyncSave]: 오류 발생 {ex}");
+                return false;
+            }
+        }
+        /// <inheritdoc/>
+        /// <remarks>ITodoStorage에서 <see cref="TodoStorage.CloseOrRemoveRoutineData(RoutineData)"/>를 사용해 existingData는 자동으로 종료시키거나 삭제합니다.</remarks>
+        public async Task<bool> UpdateRoutineData_AsyncSave(RoutineData existingData, RoutineData newData)
+        {
+            try
+            {
+                // 기존 데이터는 제거 요청
+                bool isCompleted = false;
+                isCompleted = _currentStorage.RemoveData(existingData);
+                // 신규 데이터는 추가 요청
+                isCompleted = _currentStorage.AddOrUpdateData(newData);
+                if (isCompleted)
+                {
+                    await SaveTodoDataAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DataManager - UpdateRoutineData_AsyncSave]: 오류 발생 {ex}");
+                return false;
+            }
+        }
+        /// <inheritdoc/>
         public void WaitingForSavingData()
         {
             Task.Run(async () =>
@@ -83,11 +144,15 @@ namespace Calendar.Manager
                 await SaveSettingsDataAsync();
             }).GetAwaiter().GetResult();
         }
-
+        #endregion
+        #region ISettingRepository 구현
+        /// <inheritdoc/>
         public AppSettings GetSettings()
         {
             return _appSettings;
         }
+        /// <inheritdoc/>
+        /// Todo: 나중엔 AppSettings를 변경하는게 아닌 내부 설정값을 변경하게끔 수정해야함
         public async Task<bool> SaveSettings_AsyncSave(AppSettings settings)
         {
             try
@@ -103,11 +168,30 @@ namespace Calendar.Manager
             }
         }
         #endregion
-
+        #endregion
         #region private
-        #region Data 불러오기, Data 검사 및 변경
         /// <summary>
-        /// 파일에서 데이터를 불러와 메모리에 적재
+        /// Local 저장소에서 TodoStorage 데이터를 전부 읽어온 이후 CheckLastUpdated 메서드를 호출시킵니다.
+        /// </summary>
+        private void CallCheckLastUpdatedInTodoStorage()
+        {
+            _currentStorage.CheckLastUpdated();
+        }
+        /// <summary>
+        /// DataManager의 생성자에서 구독해야할 Message들을 정의합니다.
+        /// </summary>
+        private void SubscribeMessenger()
+        {
+            Messenger.Subscribe<DataMessages.SaveDataAfter3Seconds>(this, _ =>
+            {
+                // TODO: SaveDataAfter3Seconds 만들기만하고 작동을 안하고있었음 DataManger, TodoStorage 전부 수정하고 테스트 해볼것
+                Debug.WriteLine($"SaveDataAfter3Seconds 메세지 확인");
+                SaveAfter3seconds();
+            });
+        }
+        #region Data 불러오기
+        /// <summary>
+        /// Local 저장소에서 일정, 규칙에 관련된 Json 파일을 데이터로 읽어와 메모리에 적재합니다.
         /// </summary>
         private TodoStorage LoadTodoDataFromFile()
         {
@@ -116,49 +200,19 @@ namespace Calendar.Manager
             return data;
         }
 
+        /// <summary>
+        /// Local 저장소에서 프로그램 설정에 관련된 Json 파일을 데이터로 읽어와 메모리에 적재합니다.
+        /// </summary>
         private AppSettings LoadSettingsFromFile()
         {
+            // 파일이 없으면 새 객체를 생성
             AppSettings settings = FileHelper.LoadJson<AppSettings>(SettingFileName) ?? new AppSettings();
             return settings;
         }
-
-        /// <summary>
-        /// Json 데이터를 불러올때 마지막 업데이트 날짜 체크
-        /// </summary>
-        private void CheckLastUpdated(TodoStorage data)
-        {
-            if (DateTime.Today > data.LastUpdated)
-            {
-                UpdateExpiredTasks(data);
-                data.LastUpdated = DateTime.Today.Date; // 업데이트 날짜 갱신
-
-                _ = SaveTodoDataAsync();
-            }
-        }
-
-        /// <summary>
-        /// 날짜가 바뀐 경우, 완료되지 않은 과거 데이터를 실패로 처리
-        /// </summary>
-        private void UpdateExpiredTasks(TodoStorage data)
-        {
-            DateTime today = DateTime.Today;
-
-            // 일정 중 오늘 이전의 날짜이면서 완료되지 않은 것 실패 처리
-            foreach (ScheduleData schedule in data.Schedules.Where(s => s.StartDate.Date < today && s.Status == TodoStatus.Waiting))
-            {
-                schedule.Status = TodoStatus.Failure;
-            }
-
-            // 규칙 중 오늘 이전의 날짜이면서 완료되지 않은 것 실패 처리
-            foreach (RoutineRecord record in data.RoutineRecords.Where(r => r.Date.Date < today && r.Status == TodoStatus.Waiting))
-            {
-                record.Status = TodoStatus.Failure;
-            }
-        }
         #endregion
-        #region Data 저장
+        #region Data Json 저장
         /// <summary>
-        /// 실제 파일에 데이터를 저장하는 비동기 로직
+        /// ITodoStorage를 Local 저장소에 Json으로 저장하는 비동기 로직
         /// </summary>
         private async Task SaveTodoDataAsync()
         {
@@ -195,9 +249,8 @@ namespace Calendar.Manager
                 }
             });
         }
-
         /// <summary>
-        /// 실제 파일에 데이터를 저장하는 비동기 로직
+        /// AppSettings를 Local 저장소에 Json으로 저장하는 비동기 로직
         /// </summary>
         private async Task SaveSettingsDataAsync()
         {
@@ -225,9 +278,8 @@ namespace Calendar.Manager
                 }
             });
         }
-
         /// <summary>
-        /// 3초 뒤에 저장하도록 예약하는 비동기 메서드
+        /// ITodoStorage를 Local 저장소에 3초 뒤에 Json으로 저장하도록 예약하는 비동기 메서드
         /// </summary>
         private async void SaveAfter3seconds()
         {
@@ -251,109 +303,8 @@ namespace Calendar.Manager
                 Debug.WriteLine($"[DataManager]: SaveAfter3seconds - 오류 발생\n{ex.Message}");
             }
         }
-
-        /// <summary>
-        /// 데이터를 형식에따라 저장소에 넣고 Json으로 저장
-        /// </summary>
-        private async Task AddOrUpdateData_AsyncSave(BaseTodoData data)
-        {
-            // 원본 객체가 존재하면 삭제
-            DeleteDataInCurrentStorage(data);
-
-            // 데이터 추가
-            if (data is ScheduleData s) _currentStorage.Schedules.Add(s);
-            else if (data is RoutineData r) _currentStorage.Routines.Add(r);
-            else if (data is RoutineRecord rr) _currentStorage.RoutineRecords.Add(rr);
-            await SaveTodoDataAsync();
-        }
         #endregion
-        #region Data 제거
-        /// <summary>
-        /// 전달받은 데이터의 데이터 형식에 따라 저장소에서 데이터 삭제
-        /// </summary>
-        private bool DeleteDataInCurrentStorage(BaseTodoData data)
-        {
-            var original = _currentStorage.FindOriginal(data);
-            if (original == null) return false;
-
-            return original switch
-            {
-                ScheduleData s => _currentStorage.Schedules.Remove(s),
-                RoutineData r => RemoveRoutineWithGarbageRecords(r),
-                RoutineRecord rr => _currentStorage.RoutineRecords.Remove(rr),
-                _ => false
-            };
-        }
-
-        /// <summary>
-        /// 저장소에서 RoutineData 제거하고 RoutineRecords까지 정리
-        /// </summary>
-        private bool RemoveRoutineWithGarbageRecords(RoutineData routine)
-        {
-            _currentStorage.ClearGarbageRecords(routine);
-            return _currentStorage.Routines.Remove(routine);
-        }
-
-        /// <summary>
-        /// 데이터를 제거하고 저장
-        /// </summary>
-        private async Task DeleteData_AsyncSave(BaseTodoData data)
-        {
-            if(DeleteDataInCurrentStorage(data))
-            {
-                await SaveTodoDataAsync();
-            }
-        }
-
-        /// <summary>
-        /// 데이터들을 전부 제거하고 한번만 저장
-        /// </summary>
-        private async Task DeleteData_AsyncSave(IEnumerable<BaseTodoData> datas)
-        {
-            bool isDeleted = false;
-            foreach (var data in datas.ToList()) // 리스트 복사해서 순회
-            {
-                if (DeleteDataInCurrentStorage(data))
-                    isDeleted = true;
-            }
-
-            if (isDeleted)
-                await SaveTodoDataAsync();
-        }
         #endregion
-        /// <summary>
-        /// 임시로 만들어둔 메서드임 수정해야함
-        /// 넘겨받은 existingData는 어제부로 종료시키고 newData는 저장소에 저장한다.<br/>
-        /// 하지만 newData의 입력된 값중 EndDate가 오늘 이전이면 return한다.(생성 취소)<para/>
-        /// true - 기존 데이터 제거하고 새로운 루틴 생성 성공<br/>
-        /// false - EndDate가 오늘 이전이라 데이터 제거와 루틴 생성 모두 실패
-        /// </summary>
-        /// <param name="setFailure">true: Status를 Failure로 변경, false: Status를 Waiting으로 설정</param>
-        public bool TempEditRoutineAndRegister(RoutineData existingData, RoutineData newData)
-        {
-            // newData의 EndDate가 오늘 날짜 이전이면 차단(false 반환)
-            if (!newData.IsIndefinite && newData.EndDate < DateTime.Today)
-            {
-                return false;
-            }
-            // 기존 데이터 처리
-            _currentStorage.FinishedOrRemoveRoutineData(existingData);
-            // 새로운 데이터 처리
-            _currentStorage.AddRoutineWithPastRecords(newData, false);
-            return true;
-        }
-        public bool TempAddNewRoutine(RoutineData routineData)
-        {
-            try
-            {
-                _currentStorage.AddRoutineWithPastRecords(routineData, true);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
         #endregion
     }
 }

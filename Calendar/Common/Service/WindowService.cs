@@ -56,7 +56,7 @@ namespace Calendar.Common.Service
             // lock에 접근 가능하면 Processing 진행이 가능하니 true로 변경 후 메서드 실행
             lock (_lock)
             {
-                if(_isProcessing) return;
+                if (_isProcessing) return;
                 _isProcessing = true;
             }
 
