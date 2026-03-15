@@ -9,6 +9,8 @@
 # 사용 기술
 C#, WPF, MVVM, JSON Serialization
 
+# 프로젝트 아키텍처
+<img width="4044" height="1764" alt="Image" src="https://github.com/user-attachments/assets/67235af4-fe54-4625-bb3c-392240e43df6" />
 
 # 주요 기능
 
@@ -26,7 +28,6 @@ C#, WPF, MVVM, JSON Serialization
   - 데이터를 처리할때 UI가 멈추는 현상을 방지하기위해 async/await을 사용해 데이터를 비동기로 처리하게 구현
   - CancellationTokenSource를 사용하여 3초동안 입력이 멈추면 데이터를 처리하게 만들어 성능 최적화
   - 데이터 저장시 .tmp 파일로 임시 저장한뒤 원본 파일과 교체하여 데이터 파손을 방지
-
 ---
 
 ## 달력
@@ -152,7 +153,7 @@ https://github.com/user-attachments/assets/b89b817f-09d5-47d6-ac11-f1df0a4c0d08
 
 ---
 
-# 업데이트 예정 기능
+# 추가로 수정할 것
  ### ① RoutineRecord가 많아지면 메모리 점유율이 높아질수있기에 RoutineRecord는 RoutineRecords 폴더를 만들어서 yyyy_MM.json 형태로 월별로 저장하기
   - 이에따라 TodoStorage의 Records에는 현재 표시중인 달의 RoutineRecords만 저장하게 변경하기 (캐시화)
   - ListWindow를 열때 TodoStorage의 Records에 접근하는게 아닌 ListWindow 자체에 모든 Records를 불러오게끔 만들기 (아니면 기간을 선택해서 해당 기간의 Records만 불러오기)
