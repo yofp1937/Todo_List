@@ -44,7 +44,7 @@ C#, WPF, MVVM, JSON Serialization
 ## 달력
 
  #### ① 달력 생성 데이터 흐름도 (CalendarViewModel)
- <img width="4204" height="2848" alt="Image" src="https://github.com/user-attachments/assets/d1b42554-6bda-446e-9e14-1cbe6e8e81a8" />
+ <img width="4204" height="2844" alt="Image" src="https://github.com/user-attachments/assets/73e4c87d-cfaa-4b4d-b1c0-10d6f6edc1f8" />
  
  - 달력의 연도가 바뀌면 HolidayProvider로 해당 연도의 공휴일을 생성
  - 달력을 그릴때마다 우선적으로 첫주 ~ 마지막주까지 날짜를 생성 날짜는 CalendarDayModel이라는 Class로 구현해서 정보(날짜, 휴일 여부, 해당 날짜의 일정 등)를 저장
@@ -105,12 +105,16 @@ https://github.com/user-attachments/assets/aa66ac2e-1992-4e67-8e5b-05bcceea4bd7
 
 https://github.com/user-attachments/assets/7aff627a-3c94-46ff-9863-9ff90022f27f
 
- #### ① 수정 기능
  - 데이터를 수정할땐 날짜를 선택하고 왼쪽 패널의 목록에서 텍스트를 더블 클릭하여 수정 창을 열수있음
  - 수정 창에서 값을 변경하고 수정 버튼을 클릭시 참조중인 데이터의 값을 수정하고 DataManager에 저장 요청을 보냄
+ #### 일정, 규칙 수정 흐름도
+ <img width="3164" height="2584" alt="Image" src="https://github.com/user-attachments/assets/dc75bc88-7954-48c8-b8eb-d4d17c1fae18" />
 
- #### ② 수정 데이터 흐름도
- <img width="801" height="1041" alt="Routine 수정 데이터 흐름도" src="https://github.com/user-attachments/assets/692391af-87d3-43bd-ba87-0fdc57a71fbd" />
+  - 분기에따라 일정 수정인지 규칙 수정인지 구분
+  - 규칙 수정일경우 단순 데이터(제목, 내용) 수정인지, 중요 데이터 수정인지 판별
+  - 일정과 단순 규칙 수정일 경우 ITodoRepository에 기존 Data의 수정을 요청
+  - 규칙 중요 데이터 수정의 경우 ITodoRepository에서 기존 Data 제거, 신규 Data는 추가를 요청하는 개별 메서드 호출
+  <br/>(RoutineData는 제거할때 어제부로 종료시킬지 제거할지 ITodoStorage에서 독자적으로 판단하니 기존 Data는 확실하게 제거 요청)
  
 ### 일정, 규칙 삭제
 
