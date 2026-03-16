@@ -10,14 +10,25 @@
 C#, WPF, MVVM, JSON Serialization
 
 # 프로젝트 아키텍처
+
+ ### ① 전체 흐름도
 <img width="4044" height="1764" alt="Image" src="https://github.com/user-attachments/assets/67235af4-fe54-4625-bb3c-392240e43df6" />
 
-# 주요 기능
+ ### ② 주요 데이터 흐름
+ <img width="3484" height="1272" alt="Image" src="https://github.com/user-attachments/assets/0d27ed1c-e477-4b41-a909-35d2a9a7f716" /><br/>
+ - ViewModel: 사용자가 입력한 Binding Data를 기반으로 Data를 생성하여 ITodoRepository에 처리를 요청<br/>
+ - ITodoRepository: ViewModel에게 전달받은 Data와 요청을 ITodoStorage로 전달하고,<br/>
+ ITodoStorage의 처리 결과에따라 Storage의 상태를 Json 형태로 Local Repository에 저장함<br/>
+ - ITodoStorage: ITodoRepository에게 전달받은 Data를 요청에따라 처리하고 결과를 반환해줌
+
+# 주요 기능과 데이터 흐름 설명
 
  ### ① MVVM 패턴 사용
-  - 새로운 창을 띄울때 ViewModel에서 직접 생성하지않고 Messenger를 통해 생성 메세지를 전달하면 WindowService 클래스가 메세지를 수신하여 창을 띄워주게 설계
+  - 새로운 창을 띄울때 ViewModel에서 직접 생성하지않고 Messenger를 통해 생성 메세지를 전달하면<br/>
+  WindowService 클래스가 메세지를 수신하여 창을 띄워주게 설계
   - Interface를 활용하여 상위 객체가 하위 객체의 정확한 데이터 타입을 몰라도 공통 메서드를 호출할수있게 설계
-  - 규칙(RoutineData, RoutineRecord)을 View에 표시할떄 UI 전용 Wrapper 객체인 RoutineInstance를 사용해 View는 RoutineInstance에만 접근하면 되게끔 설계
+  - 규칙(RoutineData, RoutineRecord)을 View에 표시할떄 UI 전용 Wrapper 객체인 RoutineInstance를 사용해<br/>
+  View는 RoutineInstance에만 접근하면 되게끔 설계
 
  ### ② 사용자 UI와 편의성
   - 프로그램을 전체화면으로 변경할때 작업 표시줄까지 가리지않게 구현
@@ -63,10 +74,15 @@ https://github.com/user-attachments/assets/4d35c900-419c-4bdc-8624-c8832831fd04
 
 https://github.com/user-attachments/assets/aa66ac2e-1992-4e67-8e5b-05bcceea4bd7
 
- #### ① 등록 기능 및 데이터 저장
-  - 데이터를 입력하고 등록 버튼을 누르면 TodoStorage에 데이터를 추가하고 DataManager에 데이터 저장 요청, Messenger에 UI 업데이트 메세지를 보냄 -> 이를 CalendarViewModel이 확인하여 UI를 갱신
-  - DataManager는 데이터 저장 요청이 들어오면 TodoStorage의 값들을 통째로 Json으로 변환하여 FileHelper에 입력된 경로에 저장함
-  - 규칙을 생성할때 시작 날짜가 오늘 이전이면 오늘 이전의 RoutineRecord의 Status(상태) 값은 Failure(실패) 처리
+ #### ① 일정, 규칙 등록 및 데이터 흐름도
+ <img width="4364" height="2928" alt="Image" src="https://github.com/user-attachments/assets/92d79dcb-76b5-4577-8721-3ca182c4044c" />
+ 
+ - 데이터를 입력하고 등록 버튼을 누르면 ViewModel에서 데이터를 기반으로 Instance를 생성
+ - ITodoRepository에 데이터 추가 요청을 Instance와 함께 전송하면 ITodoRepository는 이를 ITodoStorage로 그대로 전달하고 처리 결과 대기
+ - ITodoStorage는 내부에서 분기에따라 Instance를 처리함
+ - RoutineData의 StartDate가 과거일 경우 StartDate부터 어제까지의 RoutineRecord를 미리 "실패 상태"로 생성하여 저장소에 저장
+ - 처리한 결과를 ITodoRepository에 전달하고 ITodoRepository는 변경된 ITodoStorage를 LocalRepository에 저장
+ - ViewModel에서는 LocalRepository에 데이터 저장까지 끝나면 Messenger에게 UI 갱신 메세지 전송
 
 ### 일정, 규칙 수정
 
