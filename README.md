@@ -111,14 +111,14 @@ https://github.com/user-attachments/assets/b89b817f-09d5-47d6-ac11-f1df0a4c0d08
  　　　　　　　　처리 결과에따라 Storage의 상태를 Json 형태로 Local Repository에 저장하는 역할<br/>
  - ITodoStorage: ITodoRepository에게 전달받은 Data를 요청에따라 처리하고 결과를 반환해주는 역할<br/>
  
-  #### 　① 데이터 추가, 수정
+  #### 　① 데이터 추가, 수정 <a name="data-add-update"></a>
   <img width="4324" height="2780" alt="Image" src="https://github.com/user-attachments/assets/42987783-4acd-485b-9d21-67e7348c5cae" />
 
   - Data를 추가하거나 수정하려면 ViewModel에서 ITodoRepository의 AddOrUpdateData_AsyncSave에 Data를 넣어서 호출해야합니다.
   - ITodoRepository는 데이터 처리 요청을 그대로 ITodoStorage에게 전달합니다.
-  - 동일한 Id의 데이터가 존재하면 [데이터 삭제](#②-데이터-삭제)에 기술된 Data 삭제 로직이 동작합니다.
+  - 동일한 Id의 데이터가 존재하면 [3-2. ② 데이터 삭제](#data-remove)에 기술된 Data 삭제 로직이 동작합니다.
   
-  #### 　② 데이터 삭제
+  #### 　② 데이터 삭제 <a name="data-remove"></a>
   <img width="4404" height="3028" alt="Image" src="https://github.com/user-attachments/assets/68b1deac-f793-4194-99b3-3bf1c70ba9c0" />
 
   - Data를 삭제하려면 ViewModel에서 ITodoRepository의 RemoveData_AsyncSave에 Data를 넣어서 호출해야합니다.
@@ -130,7 +130,7 @@ https://github.com/user-attachments/assets/b89b817f-09d5-47d6-ac11-f1df0a4c0d08
  #### 　① 달력 생성 데이터 흐름도 (CalendarViewModel)
  <img width="4204" height="2844" alt="Image" src="https://github.com/user-attachments/assets/73e4c87d-cfaa-4b4d-b1c0-10d6f6edc1f8" />
  
- - 달력의 연도가 바뀌면 [HolidayProvider](#③-holidayprovider)로 해당 연도의 공휴일을 생성합니다.
+ - 달력의 연도가 바뀌면 [HolidayProvider](#holiday-provider)로 해당 연도의 공휴일을 생성합니다.
  - 달력을 그릴때마다 우선적으로 첫주 ~ 마지막주까지 날짜를 생성합니다.(날짜는 [CalendarDayModel](#②-calendardaymodel)이라는 Class로 구현)
  - **날짜 생성 이후 날짜마다 표시해야할 일정, 규칙이 있는지 확인하고 등록합니다.**
  
@@ -143,7 +143,7 @@ https://github.com/user-attachments/assets/b89b817f-09d5-47d6-ac11-f1df0a4c0d08
  - **SidePanelTasksView에서 선택된 날짜의 일정, 규칙을 표시하기위해 CalendarDayModel의 AllTasksView를 Binding합니다.**
  - **생성자에서 일정, 규칙 List에 Data가 추가될 경우 OnPropertyChanged를 호출해 UI가 AllTasksView를 갱신하게 해주는 이벤트를 설정합니다.**
 
- #### 　③ HolidayProvider (음력 공휴일을 양력 날짜로 치환, 대체 공휴일 계산)
+ #### 　③ HolidayProvider (음력 공휴일을 양력 날짜로 치환, 대체 공휴일 계산) <a name="holiday-provider"></a>
  <img width="4248" height="2848" alt="Image" src="https://github.com/user-attachments/assets/1103b793-af6d-47ea-8ef3-b1117b06856d" />
  
  - 음력 공휴일은 .NET 프레임워크에 내장된 KoreanLunisolarCalendar 라이브러리를 활용해 구현합니다.
@@ -156,7 +156,7 @@ https://github.com/user-attachments/assets/b89b817f-09d5-47d6-ac11-f1df0a4c0d08
  <img width="4164" height="324" alt="Image" src="https://github.com/user-attachments/assets/396d5e27-9c6a-4bd2-aa31-7b4d2a57804e" />
  
  - 데이터를 입력하고 등록 버튼을 누르면 ViewModel에서 데이터를 기반으로 Instance를 생성합니다.
- - ITodoRepository의 AddOrUpdateData_AsyncSave에 Instance를 삽입해 호출합니다.([3-2. 데이터 추가, 수정](#①-데이터-추가-수정)의 로직대로 동작)
+ - ITodoRepository의 AddOrUpdateData_AsyncSave에 Instance를 삽입해 호출합니다.([3-2. ① 데이터 추가, 수정](#data-add-update)의 로직대로 동작)
  - 처리가 끝나면 ViewModel에선 Messenger에 UI 업데이트를 요청하는 Messege를 전송합니다.
 
  #### 　② 일정, 규칙 수정 데이터 흐름도
@@ -164,7 +164,7 @@ https://github.com/user-attachments/assets/b89b817f-09d5-47d6-ac11-f1df0a4c0d08
  
  - 수정하려는 데이터를 입력하고 수정 버튼을 누르면 ViewModel에서 데이터를 기반으로 Instance를 수정하거나 생성합니다.
  - ScheduleData, RoutineRecord 수정이거나 RoutineData의 Title, Content만 수정이면<br/>
- 　ITodoRepository의 AddOrUpdateData_AsyncSave를 호출해 데이터를 수정합니다.([3-2. 데이터 추가, 수정](#①-데이터-추가-수정)의 로직대로 동작)
+ 　ITodoRepository의 AddOrUpdateData_AsyncSave를 호출해 데이터를 수정합니다.([3-2. ① 데이터 추가, 수정](#data-add-update)의 로직대로 동작)
  - RoutineData의 중요 정보 수정인경우 ITodoRepository의 UpdateRoutineData_AsyncSave를 호출해 데이터를 수정합니다.
  - UpdateRoutineData_AsyncSave는 기존 RoutineData는 RemoveData로 삭제 처리, 신규 RoutineData는 AddOrUpdate로 등록 처리하고 Json 비동기 저장을 한번 실행합니다.
  - 처리가 끝나면 ViewModel에선 Messenger에 UI 업데이트를 요청하는 Messege를 전송합니다.
@@ -173,7 +173,7 @@ https://github.com/user-attachments/assets/b89b817f-09d5-47d6-ac11-f1df0a4c0d08
  <img width="3724" height="2164" alt="Image" src="https://github.com/user-attachments/assets/0434a787-092b-4439-aea4-49894fa6fa42" />
  
  - 삭제하려는 Data의 EditTodoWindow를 호출하여 삭제 버튼을 누르면 해당 Data를 저장소에서 제거합니다.
- - ITodoRepository의 RemoveData_AsyncSave에 Instance를 삽입해 호출합니다.([3-2. 데이터 삭제](#②-데이터-삭제)의 로직대로 동작)
+ - ITodoRepository의 RemoveData_AsyncSave에 Instance를 삽입해 호출합니다.([3-2. ② 데이터 삭제](#data-remove)의 로직대로 동작)
  
  ### 3-5. 일정, 규칙 목록 흐름도
  <img width="4404" height="2484" alt="Image" src="https://github.com/user-attachments/assets/20dd293a-b7af-41f5-9aa5-145c4a961e61" />
