@@ -24,7 +24,7 @@ https://github.com/yofp1937/WPF_Calendar/releases 에서<br/>
 
 # 1. 개요
  ### 1-1. 프로젝트 설명
- WPF 개발은 처음이라 MVVM 패턴, Data Binding, Command 등 WPF만의 패턴과 데이터 처리 방법 등을 공부하기위해 진행한 간단한 달력 프로젝트입니다.
+ WPF 개발은 처음이라 MVVM 패턴, Data Binding, Command 등 WPF만의 패턴과 데이터 처리 방법 등을 공부하기위해 진행한 1인 프로젝트입니다.
  
  ### 1-2. 개발 기간
 　2025.12.01 ~ 26.03.07 (ver 1.0 - 기본 기능 구현 완료)
