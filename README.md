@@ -49,7 +49,7 @@ https://github.com/yofp1937/WPF_Calendar/releases 에서<br/>
 
 # 2. 프로그램 작동 영상과 설명
  ### 2-1. 달력
-https://github.com/user-attachments/assets/4d35c900-419c-4bdc-8624-c8832831fd04
+https://github.com/user-attachments/assets/ef2b8fac-d1e5-403b-9c59-ca365c8b9da0
 
  - 달력의 날짜를 클릭하면 해당 날짜의 일정이 왼쪽 패널에 표시되고, 체크박스로 완료 여부를 변경할 수 있습니다.
  - 체크박스를 체크하여 데이터의 상태(완료, 실패, 대기)를 변경하면 즉시 저장하지 않고, 3초동안 입력이 없을때 저장합니다.(값을 연속해서 바꿔도 한번만 저장)
@@ -65,24 +65,24 @@ https://github.com/user-attachments/assets/4d35c900-419c-4bdc-8624-c8832831fd04
 　　　　　　　　　미래 규칙은 RoutineData 기반으로 데이터를 결합해 View에 일관된 데이터를 제공합니다.
 
  #### 　① 일정, 규칙 등록
-https://github.com/user-attachments/assets/aa66ac2e-1992-4e67-8e5b-05bcceea4bd7
+https://github.com/user-attachments/assets/5f86c378-0f60-46b4-b69e-863438edb049
 
  - 달력에서 + 버튼을 눌러 일정, 규칙을 등록할 수 있습니다.
  - 데이터를 입력하고 등록 버튼 클릭 시 데이터가 등록됩니다.
 
  #### 　② 일정, 규칙 수정
-https://github.com/user-attachments/assets/7aff627a-3c94-46ff-9863-9ff90022f27f
+https://github.com/user-attachments/assets/512f9474-eea9-4700-bd09-599c0ccb1ec4
 
  - 왼쪽 할일 목록에서 데이터를 더블 클릭하거나, 목록 창을 열어서 데이터를 수정할 수 있습니다.
  - 수정할 데이터를 입력하고 수정 버튼 클릭시 데이터가 수정됩니다.
 
  #### 　③ 일정, 규칙 삭제
-https://github.com/user-attachments/assets/9d19567c-c5c7-4b96-95ba-42435b45f296
+https://github.com/user-attachments/assets/ff88e0a8-62e5-4e22-a758-e3b7219be7d5
 
  - 수정 창에서 삭제 버튼을 누르거나, 목록 창에서 데이터를 삭제할 수 있습니다.
 
  #### 　④ 일정, 규칙 목록
-https://github.com/user-attachments/assets/77210e47-88be-403d-bb5a-697503a149d4
+https://github.com/user-attachments/assets/50ee4d59-0672-42b6-aec3-de4c7934404d
 
  - 메인 Window의 목록 버튼을 누를 시 ListWindow가 생성 됨
  - 목록 버튼을 눌러서 등록한 모든 일정과 규칙을 확인하고 삭제, 수정 할 수 있음
@@ -91,7 +91,7 @@ https://github.com/user-attachments/assets/77210e47-88be-403d-bb5a-697503a149d4
  - 체크박스 외의 흰 바탕 부분을 클릭하면 일정이 파란색으로 선택되는데 수정 버튼을 누르면 파란색으로 선택된 데이터를 수정할 수 있음 (더블 클릭으로도 수정 가능)
 
  ### 2-6. 설정
-https://github.com/user-attachments/assets/b89b817f-09d5-47d6-ac11-f1df0a4c0d08
+https://github.com/user-attachments/assets/92bb2009-1e69-4366-93db-fb395b1bd649
 
  - 설정 버튼을 눌러서 프로그램 설정을 변경할 수 있습니다.
  - 최소화시 시스템 트레이로 이동을 키면 Messenger를 통해 Minimize를 요청할 경우 .Hide()로 프로그램이 보이지않게 상태를 변경합니다.
