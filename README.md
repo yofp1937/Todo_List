@@ -24,14 +24,10 @@ https://github.com/yofp1937/WPF_Calendar/releases 에서<br/>
 
 # 1. 개요
  ### 1-1. 프로젝트 설명
-　사용자에게 달력을 보여주고, 일정과 규칙을 등록하면 해당 Data를 기반으로 달력에 일정과 규칙을 표시해줍니다.<br/>
-　또한 일정과 규칙의 완료 여부를 달력에서 간단하게 변경할 수 있습니다.
-
-　등록한 일정과 규칙 Data는 사용자의 Local 저장소에 저장됩니다.
+ WPF 개발은 처음이라 MVVM 패턴, Data Binding, Command 등 WPF만의 패턴과 데이터 처리 방법 등을 공부하기위해 진행한 간단한 달력 프로젝트입니다.
  
  ### 1-2. 개발 기간
 　2025.12.01 ~ 26.03.07 (ver 1.0 - 기본 기능 구현 완료)
-
 
  ### 1-3. 사용 기술
   #### 　① C#, WPF(.NET)
@@ -119,7 +115,7 @@ https://github.com/user-attachments/assets/92bb2009-1e69-4366-93db-fb395b1bd649
   - 동일한 Id의 데이터가 존재하면 [3-2. ② 데이터 삭제](#data-remove)에 기술된 Data 삭제 로직이 동작합니다.
   
   #### 　② 데이터 삭제 <a name="data-remove"></a>
-  <img width="4404" height="3028" alt="Image" src="https://github.com/user-attachments/assets/68b1deac-f793-4194-99b3-3bf1c70ba9c0" />
+  <img width="4404" height="3564" alt="Image" src="https://github.com/user-attachments/assets/91809a60-59a2-4705-85c5-3d089287e647" />
 
   - Data를 삭제하려면 ViewModel에서 ITodoRepository의 RemoveData_AsyncSave에 Data를 넣어서 호출해야합니다.
   - ITodoRepository는 데이터 처리 요청을 그대로 ITodoStorage에게 전달합니다.
