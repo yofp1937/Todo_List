@@ -40,9 +40,10 @@ namespace Calendar.Model.DataClass
         {
             get
             {
+                // 최초 1회에만 정렬 적용
                 if (_allTasksView == null)
                 {
-                    // 최초 1회 생성 및 정렬 규칙 설정
+                    // 정렬 규칙 설정
                     var combined = Schedules.Cast<object>().Concat(RoutineInstances.Cast<object>());
                     _allTasksView = CollectionViewSource.GetDefaultView(combined);
 
@@ -50,27 +51,30 @@ namespace Calendar.Model.DataClass
                     if (_allTasksView is ICollectionViewLiveShaping liveView && liveView.CanChangeLiveSorting)
                     {
                         liveView.IsLiveSorting = true;
-                        liveView.LiveSortingProperties.Add(nameof(BaseTodoDataWithStatus.Status.Failure));
-                        liveView.LiveSortingProperties.Add(nameof(BaseTodoDataWithStatus.Status.Completion));
+                        liveView.LiveSortingProperties.Add(nameof(BaseTodoDataWithStatus.Status));
                     }
-
-                    // 사용자님의 정렬 기준 적용 (최초)
+                    // 정렬 기준 적용 
                     ApplySortDescriptions();
                 }
                 return _allTasksView;
             }
         }
-
-        // AllTasksView의 갯수가 10개를 넘어가면 
-        public bool IsTaskOverLimit => AllTasksView.Cast<object>().Count() >= 10;
         #endregion
 
         #region 생성자
         public CalendarDayModel()
         {
             // 컬렉션이 새로 할당되거나 변경될 때를 위해 이벤트 연결
-            Schedules.CollectionChanged += (s, e) => { SubscribeItems(e.NewItems); OnPropertyChanged(nameof(AllTasksView)); };
-            RoutineInstances.CollectionChanged += (s, e) => { SubscribeItems(e.NewItems); OnPropertyChanged(nameof(AllTasksView)); };
+            Schedules.CollectionChanged += (s, e) =>
+            {
+                SubscribeItems(e.NewItems);
+                OnPropertyChanged(nameof(AllTasksView));
+            };
+            RoutineInstances.CollectionChanged += (s, e) =>
+            { 
+                SubscribeItems(e.NewItems);
+                OnPropertyChanged(nameof(AllTasksView));
+            };
         }
         public CalendarDayModel(DateTime date, bool isCurrentMonth) : this()
         {
@@ -153,10 +157,10 @@ namespace Calendar.Model.DataClass
         /// </summary>
         public void RefreshView()
         {
+            // 정렬 재적용
             AllTasksView.Refresh();
             // AllTasksView 속성이 업데이트됐음을 UI에게 알림
             OnPropertyChanged(nameof(AllTasksView));
-            OnPropertyChanged(nameof(IsTaskOverLimit));
         }
         #endregion
     }

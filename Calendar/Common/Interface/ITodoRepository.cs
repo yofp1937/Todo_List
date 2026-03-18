@@ -6,7 +6,6 @@
  * 2.ITodoStorage에 데이터 변경 요청
  * 3.파일을 Json 형태로 저장
  */
-using Calendar.Model.DataClass;
 using Calendar.Model.DataClass.TodoEntities;
 
 namespace Calendar.Common.Interface

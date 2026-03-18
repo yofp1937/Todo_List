@@ -119,12 +119,14 @@ namespace Calendar.ViewModel.ListWindow
             // 1. ScheduleData 채우기
             foreach (ScheduleData schedule in storage.ScheduleDatas)
             {
+                schedule.IsChecked = false;
                 ConnectEventToData(schedule);
                 ScheduleDataList.Add(schedule);
             }
             // 2. RoutineData 채우기
             foreach (RoutineData routineData in storage.RoutineDatas)
             {
+                routineData.IsChecked = false;
                 ConnectEventToData(routineData);
                 RoutineDataList.Add(routineData);
             }
@@ -133,6 +135,7 @@ namespace Calendar.ViewModel.ListWindow
             var sortedRecords = storage.RoutineRecords.OrderBy(r => r.Date).ThenBy(r => r.CreatedTicks);
             foreach (RoutineRecord routineRecord in sortedRecords)
             {
+                routineRecord.IsChecked = false;
                 ConnectEventToData(routineRecord);
                 RoutineRecordList.Add(routineRecord);
             }

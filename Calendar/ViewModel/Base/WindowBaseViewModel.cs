@@ -12,6 +12,7 @@ namespace Calendar.ViewModel.Base
 {
     public abstract class WindowBaseViewModel : BaseViewModel
     {
+        #region Property
         private ITodoRepository? _todoRepository;
         protected ITodoRepository TodoRepository
         {
@@ -39,7 +40,6 @@ namespace Calendar.ViewModel.Base
         // 최상단 타이틀바에 표시될 창 이름
         public string? MainBarTitleText { get; protected set; }
 
-        #region Property
         public ICommand? DragMoveWindowCommand { get; private set; }
         public ICommand? MinimizeWindowCommand { get; private set; }
         public ICommand? MaximizeWindowCommand { get; private set; }

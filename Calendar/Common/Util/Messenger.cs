@@ -1,10 +1,6 @@
 ﻿/*
  * Send로 Messenger에 신호를 보내면 해당 신호를 구독한 구독자들이 예약된 동작을 실행하도록 만듦 
  */
-
-/*
- * Send로 Messenger에 신호를 보내면 해당 신호를 구독한 구독자들이 예약된 동작을 실행하도록 만듦 
- */
 using System.Diagnostics;
 
 namespace Calendar.Common.Util

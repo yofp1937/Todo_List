@@ -3,12 +3,6 @@
  * 윈도우 창 전체화할때 작업 표시줄을 제외하기위해 사용
  */
 
-
-/*
- * Win32 API와 통신할 때 사용하는 상수와 구조체들을 모아둔 클래스
- * 윈도우 창 전체화할때 작업 표시줄을 제외하기위해 사용
- */
-
 using System.Runtime.InteropServices;
 
 namespace Calendar.Common.Util

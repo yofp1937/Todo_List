@@ -77,6 +77,7 @@ namespace Calendar.Model.DataClass
         {
             if (data == null)
                 return false;
+            Debug.WriteLine($"RemoveData - {data.GetType().Name} 제거");
             return RemoveDataInStorage(data);
         }
         #endregion
@@ -187,7 +188,12 @@ namespace Calendar.Model.DataClass
         private bool RemoveDataInStorage(BaseTodoData data)
         {
             bool result = false;
-            switch (data)
+
+            BaseTodoData? target = FindOriginalData(data);
+            if (target == null)
+                return false;
+
+            switch (target)
             {
                 case ScheduleData s:
                     result = _scheduleDatas.Remove(s);
@@ -216,18 +222,28 @@ namespace Calendar.Model.DataClass
                 RoutineData? target = FindOriginalData(data);
                 if (target == null) return false;
 
-                // 1.넘겨받은 RoutineData를 참조하는 RoutineRecord중 Status값이 Waiting이 아닌 값이 하나라도 존재하는지 확인
-                bool hasRecords = RoutineRecords.Any(r => r.ParentRoutineId == target.Id && r.Status != TodoStatus.Waiting);
-                if (hasRecords)
+                // 1. 넘겨받은 Data가 이미 종료됐는지 확인
+                bool isEnd = !target.IsIndefinite && DateTime.Today > target.EndDate;
+                // 2. 이미 종료된 RoutineData면 제거
+                if (isEnd)
                 {
-                    // 2.하나라도 존재하면 RoutineData는 어제부로 종료시킴
-                    target.IsIndefinite = false;
-                    target.EndDate = DateTime.Today.AddDays(-1);
+                    _routineDatas.Remove(target);
                 }
                 else
                 {
-                    // 3.Status가 전부 Waiting일 경우 저장소에서 제거
-                    _routineDatas.Remove(target);
+                    // 3.넘겨받은 RoutineData를 참조하는 RoutineRecord중 Status값이 Waiting이 아닌 값이 하나라도 존재하는지 확인
+                    bool hasRecords = RoutineRecords.Any(r => r.ParentRoutineId == target.Id && r.Status != TodoStatus.Waiting);
+                    if (hasRecords)
+                    {
+                        // 4.하나라도 존재하면 RoutineData는 어제부로 종료시킴
+                        target.IsIndefinite = false;
+                        target.EndDate = DateTime.Today.AddDays(-1);
+                    }
+                    else
+                    {
+                        // 5.Status가 전부 Waiting일 경우 저장소에서 제거
+                        _routineDatas.Remove(target);
+                    }
                 }
                 ClearUnusedRecords(data);
                 return true;

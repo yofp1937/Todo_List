@@ -78,18 +78,21 @@ namespace Calendar.ViewModel.TodoWindow
                 // 1. 과거 데이터면 RoutineRecord만 제거
                 if (today > _routineRecord.Date.Date || _routineData == null)
                 {
+                    Debug.WriteLine($"과거 데이터 제거");
                     _ = TodoRepository.RemoveData_AsyncSave(_routineRecord);
                 }
                 // 2. 오늘, 미래 규칙이면 RoutineData 제거
                 if (_routineData != null && _routineRecord.Date.Date >= today)
                 {
+                    Debug.WriteLine($"routine 데이터 제거");
                     _ = TodoRepository.RemoveData_AsyncSave(_routineData);
                 }
             }
             else
             {
                 if (_scheduleData == null) return;
-                _= TodoRepository.RemoveData_AsyncSave(_scheduleData);
+                Debug.WriteLine($"schedule 데이터 제거");
+                _ = TodoRepository.RemoveData_AsyncSave(_scheduleData);
             }
             Messenger.Send(new TodoMessages.RefreshTodoUI());
             CloseWindow();

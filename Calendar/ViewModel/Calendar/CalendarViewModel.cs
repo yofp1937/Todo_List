@@ -191,17 +191,11 @@ namespace Calendar.ViewModel.Calendar
                     // 1.오늘 표시돼야하는 Data인지
                     if (routine.IsCheckInDay(day.Date))
                     {
-                        // 2. 이 날짜에 저장된 RoutineRecord가 존재하는지
-                        RoutineRecord? record = storage.RoutineRecords.FirstOrDefault(r => r.ParentRoutineId == routine.Id && r.Date == day.Date.Date);
-                        // RoutineRecords에 Data가 존재하지 않으면 새로 생성
-                        if (record == null)
+                        RoutineRecord record = new RoutineRecord(routine, day.Date);
+                        // 오늘 이전 날짜라면 저장소에 Record 저장
+                        if (day.Date.Date <= DateTime.Today)
                         {
-                            record = new RoutineRecord(routine, day.Date);
-                            // 오늘 이전 날짜라면 저장소에 Record 저장
-                            if (day.Date.Date <= DateTime.Today)
-                            {
-                                _ = _todoRepository.AddOrUpdateData_AsyncSave(record);
-                            }
+                            _ = _todoRepository.AddOrUpdateData_AsyncSave(record);
                         }
                         day.RoutineInstances.Add(new RoutineInstance(routine, record));
                     }
