@@ -70,7 +70,7 @@ namespace Calendar.Manager
         {
             try
             {
-                if(_currentStorage.RemoveData(data))
+                if (_currentStorage.RemoveData(data))
                 {
                     await SaveTodoDataAsync();
                     return true;
@@ -184,8 +184,6 @@ namespace Calendar.Manager
         {
             Messenger.Subscribe<DataMessages.SaveDataAfter3Seconds>(this, _ =>
             {
-                // TODO: SaveDataAfter3Seconds 만들기만하고 작동을 안하고있었음 DataManger, TodoStorage 전부 수정하고 테스트 해볼것
-                Debug.WriteLine($"SaveDataAfter3Seconds 메세지 확인");
                 SaveAfter3seconds();
             });
         }
@@ -230,7 +228,7 @@ namespace Calendar.Manager
                     {
                         // 데이터 저장중 프로그램이 종료되면 파일이 깨질 위험 존재하므로 임시 파일에 우선 저장
                         // _currentStorage를 저장하면 Interface 기반으로 저장돼서 형변환하여 저장해야함
-                        if(_currentStorage is TodoStorage storage)
+                        if (_currentStorage is TodoStorage storage)
                             FileHelper.SaveJson(tempPath, storage);
 
                         // 임시 파일과 원본 파일이 존재하면 원본 삭제
@@ -241,7 +239,6 @@ namespace Calendar.Manager
 
                         // 임시 파일을 원본으로 변경
                         File.Move(tempPath, filePath);
-                        //Debug.WriteLine($"[DataManager]: SaveTodoDataAsync - 파일 저장 완료");
                     }
                     catch (Exception ex)
                     {
@@ -291,13 +288,13 @@ namespace Calendar.Manager
             {
                 // 비동기로 3초 대기 (이 동안 UI는 멈추지 않음)
                 await Task.Delay(3000, _saveCts.Token);
-                // 33초가 지나면 실제 파일 저장 실행
+                // 3초가 지나면 실제 파일 저장 실행
                 await SaveTodoDataAsync();
-                //Debug.WriteLine($"[DataManager]: SaveAfter3seconds - 3초 지나서 성공적으로 데이터 저장됨");
+                Debug.WriteLine($"[DataManager]: SaveAfter3seconds - 3초 지나서 성공적으로 데이터 저장됨");
             }
             catch (TaskCanceledException)
             {
-                // 새로 SaveAfter3seconds가 호출되서 기존 _saveCts가 취소된 경우
+                Debug.WriteLine($"[DataManager]: SaveAfter3seconds 새로 호출됨");
             }
             catch (Exception ex)
             {

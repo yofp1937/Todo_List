@@ -38,14 +38,14 @@ namespace Calendar.Model.DataClass
         public void CheckLastUpdated()
         {
             DateTime today = DateTime.Today;
-            if( today > _lastUpdated)
+            if (today > _lastUpdated)
             {
                 ChangeStatusOfData();
             }
         }
         /// <inheritdoc cref="ITodoStorage.FindOriginalData{T}(T)"/>
         /// <remarks>내부 저장소 검색 메서드인 <see cref="FindOriginalDataInStorage{T}(T)"/>를 호출하여 원본을 반환합니다.</remarks>
-        public T? FindOriginalData<T>(T data) where T : BaseTodoData 
+        public T? FindOriginalData<T>(T data) where T : BaseTodoData
         {
             return FindOriginalDataInStorage(data);
         }
@@ -60,7 +60,7 @@ namespace Calendar.Model.DataClass
             // 1.저장소에 동일한 데이터가 존재하는지 검색
             var found = FindOriginalDataInStorage(data);
             // 2.데이터가 존재하면 기존 데이터 제거
-            if(found != null)
+            if (found != null)
             {
                 bool removeComplete = RemoveDataInStorage(found);
                 if (!removeComplete)
@@ -77,7 +77,6 @@ namespace Calendar.Model.DataClass
         {
             if (data == null)
                 return false;
-            Debug.WriteLine($"RemoveData - {data.GetType().Name} 제거");
             return RemoveDataInStorage(data);
         }
         #endregion
@@ -113,16 +112,13 @@ namespace Calendar.Model.DataClass
         {
             if (data == null) return null;
 
-            BaseTodoData? found = data switch
+            return data switch
             {
-                ScheduleData => _scheduleDatas.FirstOrDefault(x => x.Id == data.Id),
-                RoutineData => _routineDatas.FirstOrDefault(x => x.Id == data.Id),
-                RoutineRecord => _routineRecords.FirstOrDefault(x => x.Id == data.Id),
+                ScheduleData => _scheduleDatas.FirstOrDefault(x => x.Id == data.Id) as T,
+                RoutineData => _routineDatas.FirstOrDefault(x => x.Id == data.Id) as T,
+                RoutineRecord => _routineRecords.FirstOrDefault(x => x.Id == data.Id) as T,
                 _ => null
             };
-
-            // data.Id를 기반으로 찾아낸 data를 T로 형변환하여 반환
-            return found as T;
         }
         #endregion
         #region Data 추가
@@ -155,7 +151,7 @@ namespace Calendar.Model.DataClass
         /// <param name="setFailure">True면 Status를 Failure로 설정, False면 Status를 Waiting으로 설정</param>
         private void GeneratePastRoutineRecords(RoutineData data, bool setFailure)
         {
-            if(data == null) return;
+            if (data == null) return;
 
             // 1.시작 날짜가 오늘이후면 return합니다.
             DateTime startDate = data.StartDate.Date;

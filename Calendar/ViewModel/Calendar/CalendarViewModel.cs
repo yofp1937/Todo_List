@@ -10,6 +10,7 @@ using Calendar.Model.DataClass;
 using Calendar.Model.DataClass.TodoEntities;
 using Calendar.ViewModel.Base;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace Calendar.ViewModel.Calendar

@@ -71,7 +71,7 @@ namespace Calendar.Model.DataClass
                 OnPropertyChanged(nameof(AllTasksView));
             };
             RoutineInstances.CollectionChanged += (s, e) =>
-            { 
+            {
                 SubscribeItems(e.NewItems);
                 OnPropertyChanged(nameof(AllTasksView));
             };

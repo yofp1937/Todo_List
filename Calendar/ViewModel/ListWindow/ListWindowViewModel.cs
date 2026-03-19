@@ -6,12 +6,12 @@ using Calendar.Common.Commands;
 using Calendar.Common.Interface;
 using Calendar.Common.Messages;
 using Calendar.Common.Util;
-using Calendar.Model.DataClass;
 using Calendar.Model.DataClass.TodoEntities;
 using Calendar.Model.Enum;
 using Calendar.ViewModel.Base;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace Calendar.ViewModel.ListWindow
@@ -218,7 +218,8 @@ namespace Calendar.ViewModel.ListWindow
 
         private void DoubleClickExecute(object? obj)
         {
-            if (obj == null) return;
+            if (obj == null) 
+                return;
             Messenger.Send(new WindowMessages.OpenWindowMessage(obj));
         }
         #endregion

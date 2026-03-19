@@ -36,8 +36,8 @@ namespace Calendar.ViewModel.TodoWindow
                 switch (todoData)
                 {
                     case RoutineInstance routineInstance:
-                        _routineData = routineInstance.ParentRoutineData;
-                        _routineRecord = routineInstance;
+                        _routineData = routineInstance.RoutineData;
+                        _routineRecord = routineInstance.RoutineRecord;
                         break;
                     case RoutineData routineData:
                         _routineData = routineData;
@@ -55,6 +55,8 @@ namespace Calendar.ViewModel.TodoWindow
             // 1. 필수 데이터가 모두 입력됐는지 확인
             if (!CheckRequiredData())
                 return;
+
+            Debug.WriteLine($"schedule:{_scheduleData}, routinedata:{_routineData}, routineRecord:{_routineRecord}");
 
             if (IsRoutine)
             {
@@ -78,20 +80,17 @@ namespace Calendar.ViewModel.TodoWindow
                 // 1. 과거 데이터면 RoutineRecord만 제거
                 if (today > _routineRecord.Date.Date || _routineData == null)
                 {
-                    Debug.WriteLine($"과거 데이터 제거");
                     _ = TodoRepository.RemoveData_AsyncSave(_routineRecord);
                 }
                 // 2. 오늘, 미래 규칙이면 RoutineData 제거
                 if (_routineData != null && _routineRecord.Date.Date >= today)
                 {
-                    Debug.WriteLine($"routine 데이터 제거");
                     _ = TodoRepository.RemoveData_AsyncSave(_routineData);
                 }
             }
             else
             {
                 if (_scheduleData == null) return;
-                Debug.WriteLine($"schedule 데이터 제거");
                 _ = TodoRepository.RemoveData_AsyncSave(_scheduleData);
             }
             Messenger.Send(new TodoMessages.RefreshTodoUI());
@@ -214,12 +213,12 @@ namespace Calendar.ViewModel.TodoWindow
         private void OperateRoutineEditProcess()
         {
             // 루틴 아니면 retrun
-            if (!IsRoutine || _routineRecord == null) return;
+            if (!IsRoutine) return;
 
             DateTime today = DateTime.Today;
 
             // 미래의 데이터를 수정하는가?
-            if (_routineRecord.Date > today)
+            if (_routineRecord == null || _routineRecord.Date > today)
             {
                 UpdateFutureRoutine();
             }

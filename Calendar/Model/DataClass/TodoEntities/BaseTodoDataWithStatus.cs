@@ -11,7 +11,7 @@ namespace Calendar.Model.DataClass.TodoEntities
     public class BaseTodoDataWithStatus : BaseTodoData, ITodoStatus
     {
         private TodoStatus _status = TodoStatus.Waiting;
-        public TodoStatus Status
+        public virtual TodoStatus Status
         {
             get => _status;
             set => SetProperty(ref _status, value);
@@ -24,12 +24,12 @@ namespace Calendar.Model.DataClass.TodoEntities
         [JsonIgnore]
         public bool IsFailure => Status == TodoStatus.Failure;
 
-        protected BaseTodoDataWithStatus() { }
-        /// 똑같은 데이터를 가진 복사체를 만들어야할때 사용 (base도 호출하여 부모 생성자도 호출)
-        /// </summary>
-        protected BaseTodoDataWithStatus(BaseTodoDataWithStatus other) : base(other)
+        public void NotifyStatusChanged()
         {
-            Status = other.Status;
+            OnPropertyChanged(nameof(Status));
+            OnPropertyChanged(nameof(IsWaiting));
+            OnPropertyChanged(nameof(IsCompletion));
+            OnPropertyChanged(nameof(IsFailure));
         }
     }
 }

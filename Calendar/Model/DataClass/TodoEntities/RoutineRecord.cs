@@ -14,14 +14,6 @@ namespace Calendar.Model.DataClass.TodoEntities
         public DateTime Date { get; set; } // 날짜
 
         public RoutineRecord() { }
-        /// <summary>
-        /// 똑같은 데이터를 가진 복사체를 만들어야할때 사용 (base도 호출하여 부모 생성자도 호출)
-        /// </summary>
-        protected RoutineRecord(RoutineRecord other) : base(other)
-        {
-            ParentRoutineId = other.ParentRoutineId;
-            Date = other.Date;
-        }
 
         /// <summary>
         /// RoutineData를 기반으로 새로운 RoutineRecord를 생성하는 생성자

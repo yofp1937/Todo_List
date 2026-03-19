@@ -6,14 +6,14 @@ namespace Calendar.Model.DataClass.TodoEntities
     public abstract class BaseTodoData : BaseDataClass // UI 연동을 위해 BaseDataClass 상속
     {
         public Guid Id { get; set; } = Guid.NewGuid(); // JSON Key용
-        public string TodoTitle { get; set; } = ""; // 할일 제목
+        public virtual string TodoTitle { get; set; } = ""; // 할일 제목
         public string? TodoContent { get; set; } // 할일 상세 내용
         public DateTime StartDate { get; set; } // 시작 날짜
 
         // 정렬용 데이터 생성 시간
         public long CreatedTicks { get; protected set; } = DateTime.Now.Ticks;
         // 정렬용 순서값
-        public int TypePriority => this switch
+        public virtual int TypePriority => this switch
         {
             ScheduleData => 0,
             RoutineData => 1,

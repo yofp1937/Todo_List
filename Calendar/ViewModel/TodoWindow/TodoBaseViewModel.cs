@@ -158,7 +158,6 @@ namespace Calendar.ViewModel.TodoWindow
             // 1. 제목이 입력됐는가
             if (string.IsNullOrWhiteSpace(TitleTextBox))
             {
-                Debug.WriteLine("제목입력x");
                 WarningText = "제목을 입력하세요.";
                 IsWarningVisible = true;
                 return false;

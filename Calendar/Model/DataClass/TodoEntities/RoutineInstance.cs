@@ -9,18 +9,35 @@
  * Schedule에 접근할땐 TodoTitle 이렇게 바로 타고들어올수있어서
  * 이런 View에서의 접근을 최적하하기위해 RoutineRecord를 상속하게 만듦
  */
+using Calendar.Model.Enum;
+
 namespace Calendar.Model.DataClass.TodoEntities
 {
-    public class RoutineInstance : RoutineRecord
+    public class RoutineInstance : BaseTodoDataWithStatus
     {
-        public RoutineData? ParentRoutineData { get; }
+        public RoutineData? RoutineData { get; }
+        public RoutineRecord RoutineRecord { get; }
 
-        /// <summary>
-        /// 똑같은 데이터를 가진 복사체를 만들어야할때 사용 (base도 호출하여 부모 생성자도 호출)
-        /// </summary>
-        public RoutineInstance(RoutineData? data, RoutineRecord record) : base(record)
+        public RoutineInstance(RoutineData? data, RoutineRecord record)
         {
-            ParentRoutineData = data;
+            RoutineData = data;
+            RoutineRecord = record;
+        }
+
+        // View에서의 접근성을 높이는 Proxy 속성
+        public override string TodoTitle => RoutineRecord.TodoTitle;
+        public override int TypePriority => RoutineRecord.TypePriority;
+        public override TodoStatus Status
+        {
+            get => RoutineRecord.Status;
+            set
+            {
+                if (RoutineRecord.Status != value)
+                {
+                    RoutineRecord.Status = value;
+                    NotifyStatusChanged();
+                }
+            }
         }
     }
 }
